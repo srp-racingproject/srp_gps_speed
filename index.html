@@ -7,7 +7,7 @@
 <meta name="application-name" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-title" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="./icon-192.png" type="image/png">
@@ -16,10 +16,10 @@
 <style>
 :root{--bg:#050b15;--panel:#091524;--line:#213c59;--blue:#138dff;--cyan:#42d7ff;--muted:#8da6c0;--white:#f2f7ff}
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;overflow:hidden}
-body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--white);background:radial-gradient(ellipse at 90% 18%,#0b3154 0,transparent 45%),linear-gradient(145deg,#07111f,#030811 78%);overscroll-behavior:none}
+html{margin:0;width:100%;height:100%;min-height:100%;overflow:hidden;background:#050b15}body{margin:0;width:100%;height:100%;min-height:100%;overflow:hidden;background-color:#050b15}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--white);background-color:#050b15;background-image:radial-gradient(ellipse at 90% 18%,#0b3154 0,transparent 45%),linear-gradient(145deg,#07111f,#030811 78%);background-repeat:no-repeat;background-size:100% 100%;overscroll-behavior:none}
 body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.10;background-image:linear-gradient(45deg,#29445e 25%,transparent 25%,transparent 75%,#29445e 75%),linear-gradient(45deg,#29445e 25%,transparent 25%,transparent 75%,#29445e 75%);background-position:0 0,12px 12px;background-size:24px 24px;mask-image:linear-gradient(to bottom,black,transparent 95%)}
-.app{height:100dvh;min-height:0;width:min(100%,560px);margin:auto;padding:clamp(10px,2.3vh,22px) clamp(13px,4vw,22px) max(10px,env(safe-area-inset-bottom));display:flex;flex-direction:column;position:relative;gap:clamp(7px,1.5vh,14px)}
+.app{height:100%;height:100dvh;min-height:0;width:min(100%,560px);margin:auto;padding:clamp(10px,2.3vh,22px) clamp(13px,4vw,22px) max(10px,env(safe-area-inset-bottom));display:flex;flex-direction:column;position:relative;gap:clamp(7px,1.5vh,14px)}
 .header{height:clamp(84px,17vh,142px);flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:9px;border-bottom:1px solid #1b344d;padding-bottom:clamp(7px,1.3vh,14px);min-height:0;position:relative}
 .logo{display:block;width:min(96%,500px);height:100%;object-fit:contain;object-position:center;filter:drop-shadow(0 0 8px rgba(0,111,255,.12))}
 .badge{display:none}
