@@ -169,14 +169,10 @@ button:active{transform:scale(.985)}
 <script>
 (()=>{
   const splash=document.getElementById('srpSplash');
-  const isInstalledApp=window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true;
   if(splash){
-    if(isInstalledApp){
-      window.setTimeout(()=>splash.classList.add('hide'),2000);
-      window.setTimeout(()=>splash.remove(),2350);
-    }else{
-      splash.remove();
-    }
+    // Always show the intro for 2 seconds after the HTML loads.
+    window.setTimeout(()=>splash.classList.add('hide'),2000);
+    window.setTimeout(()=>splash.remove(),2350);
   }
  const $=id=>document.getElementById(id);
  // ---- tuning ----
