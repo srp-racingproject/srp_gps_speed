@@ -102,9 +102,25 @@ button:active{transform:scale(.985)}
  .speedbox .speed{font-size:65px}
 }
 
+
+/* SRP startup splash */
+#srpSplash{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:24px;text-align:center;background:radial-gradient(ellipse at 50% 38%,#0b3154 0,transparent 48%),linear-gradient(145deg,#07111f,#030811 78%);opacity:1;visibility:visible;transition:opacity .25s ease,visibility .25s ease}
+#srpSplash:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.10;background-image:linear-gradient(45deg,#29445e 25%,transparent 25%,transparent 75%,#29445e 75%),linear-gradient(45deg,#29445e 25%,transparent 25%,transparent 75%,#29445e 75%);background-position:0 0,12px 12px;background-size:24px 24px}
+#srpSplash.hide{opacity:0;visibility:hidden;pointer-events:none}
+#srpSplash .splash-brand{position:relative;font-size:clamp(30px,9vw,46px);font-weight:1000;font-style:italic;letter-spacing:-1px;color:#f4f7ff;text-shadow:0 0 18px #168cff50}
+#srpSplash .splash-brand span{background:linear-gradient(100deg,#25d9ff,#168bff 65%,#eaf5ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+#srpSplash .splash-line{position:relative;width:100px;height:3px;border-radius:3px;background:linear-gradient(90deg,#168cff,#4dd9ff,transparent)}
+#srpSplash .splash-credit{position:relative;color:#b7cbe0;font-size:clamp(12px,3.5vw,15px);font-weight:800;letter-spacing:1.4px}
+@media(prefers-reduced-motion:reduce){#srpSplash{transition:none}}
+
 </style>
 </head>
 <body>
+<div id="srpSplash" aria-label="Developed by SRP RACING PART">
+  <div class="splash-brand">SRP <span>GPS SPEED</span></div>
+  <div class="splash-line"></div>
+  <div class="splash-credit">Developed by SRP RACING PART</div>
+</div>
 <main class="app">
   <header class="header">
     <div class="brand" aria-label="SRP GPS SPEED"><span class="srp">SRP</span><span class="gps">GPS SPEED</span></div>
@@ -152,6 +168,16 @@ button:active{transform:scale(.985)}
 </main>
 <script>
 (()=>{
+  const splash=document.getElementById('srpSplash');
+  const isInstalledApp=window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true;
+  if(splash){
+    if(isInstalledApp){
+      window.setTimeout(()=>splash.classList.add('hide'),2000);
+      window.setTimeout(()=>splash.remove(),2350);
+    }else{
+      splash.remove();
+    }
+  }
  const $=id=>document.getElementById(id);
  // ---- tuning ----
  const MAX_ACC=40;      // ignore fixes less accurate than 40 m
