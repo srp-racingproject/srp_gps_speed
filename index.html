@@ -2,101 +2,255 @@
 <html lang="th">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050b15">
 <meta name="application-name" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-title" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="manifest" href="./manifest.json">
-<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
-<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <title>SRP GPS SPEED</title>
 <style>
-:root{color-scheme:dark;--bg:#050b15;--panel:#081321;--line:#203b58;--blue:#087ff0;--cyan:#42d7ff;--muted:#8fa7c0;--white:#f2f7ff}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;width:100%;min-height:100%;background:var(--bg)}
-body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--white);background:radial-gradient(ellipse at 90% 12%,#0b3154 0,transparent 43%),linear-gradient(145deg,#07111f,#030811 78%);overscroll-behavior:none}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.10;background-image:linear-gradient(45deg,#29445e 25%,transparent 25%,transparent 75%,#29445e 75%),linear-gradient(45deg,#29445e 25%,transparent 25%,transparent 75%,#29445e 75%);background-position:0 0,12px 12px;background-size:24px 24px}
-.app{width:min(100%,780px);min-height:100svh;margin:auto;padding:max(12px,env(safe-area-inset-top)) clamp(14px,4vw,30px) max(12px,env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:clamp(10px,1.8vh,16px);position:relative}
-.header{min-height:54px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:10px;border-bottom:1px solid #1b344d}
-.brand{display:flex;align-items:baseline;gap:8px;white-space:nowrap;font-style:italic;font-weight:1000;letter-spacing:-.8px;line-height:1;text-transform:uppercase}
-.srp{font-size:clamp(24px,6.3vw,36px);color:#f4f7ff;text-shadow:0 1px 0 #8ca6c0,0 0 13px #168cff50}
-.gps{font-size:clamp(15px,4.2vw,24px);letter-spacing:.2px;background:linear-gradient(100deg,#25d9ff,#168bff 65%,#eaf5ff);-webkit-background-clip:text;background-clip:text;color:transparent}
-.clock{font-variant-numeric:tabular-nums;color:#a9c0d9;text-align:right;line-height:1.35;white-space:nowrap;flex:0 0 auto}
-#time{font-weight:850;color:#f2f7ff;font-size:clamp(13px,3.4vw,17px);letter-spacing:.4px}#date{font-size:clamp(9px,2.4vw,12px);color:#8ca6c1}
-.panel{flex:1;min-height:calc(100svh - 115px);border:1px solid #24405e;background:linear-gradient(145deg,rgba(11,24,41,.97),rgba(5,13,24,.98));border-radius:clamp(18px,4vw,28px);padding:clamp(14px,3.2vw,26px);box-shadow:0 12px 35px #0002;display:flex;flex-direction:column}
-.speedbox{flex:1;min-height:230px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px 0 28px}
-.speedlabel{color:#8ca6c1;font-weight:900;font-size:clamp(10px,2.5vw,13px);letter-spacing:clamp(3px,.8vw,5px)}
-.speed{font-size:clamp(76px,21vw,132px);font-weight:950;letter-spacing:-.065em;line-height:1.12;font-variant-numeric:tabular-nums;text-shadow:0 0 32px #168cff25;white-space:nowrap}
-.speed em{font-size:clamp(15px,4vw,22px);font-style:normal;letter-spacing:1px;color:#59ceff;margin-left:7px}
-.status{font-size:clamp(10px,2.6vw,14px);color:#7f9ab6;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center}
-.status i{width:8px;height:8px;flex:0 0 8px;border-radius:50%;background:#f4b74c}.status.live i{background:#31e69c;box-shadow:0 0 10px #31e69c}
-.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(8px,1.7vw,12px);flex:0 0 auto}
-.stat{border:1px solid #203a56;border-radius:clamp(13px,2.5vw,19px);padding:clamp(10px,2.3vw,17px);background:#07111e;min-width:0}
-.stat label{display:block;color:#8ca6c1;font-size:clamp(10px,2.5vw,14px);line-height:1.35;margin-bottom:7px}
-.stat b{font-size:clamp(20px,5vw,31px);font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
-.stat span{font-size:clamp(10px,2.5vw,14px);color:#5bcfff;margin-left:4px}
-.actions{display:grid;grid-template-columns:1.3fr 1fr;gap:10px;flex:0 0 auto;margin-top:clamp(12px,2vh,18px)}
-button{border:0;border-radius:clamp(13px,2.5vw,18px);padding:clamp(15px,2.8vh,23px) 8px;font-size:clamp(13px,3.5vw,19px);font-weight:900;color:white;cursor:pointer;touch-action:manipulation;white-space:nowrap}
-#start{background:linear-gradient(110deg,#0876df,#168fff);box-shadow:0 7px 20px #007bff2c}#reset{background:#0a1727;border:1px solid #2a4562;color:#b7cbe0}button:active{transform:scale(.985)}
-.note{flex:0 0 auto;font-size:clamp(9px,2.3vw,12px);color:#7089a4;line-height:1.45;margin:clamp(9px,1.5vh,13px) 2px 0}
-.footer{text-align:center;color:#526d89;font-size:clamp(9px,2.1vw,12px);letter-spacing:clamp(1px,.4vw,2px);padding-bottom:2px}
-@media(min-width:560px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.stat b{font-size:clamp(17px,2.7vw,24px)}}
-@media(max-height:700px){.app{gap:7px;padding-top:max(7px,env(safe-area-inset-top))}.header{min-height:40px;padding-bottom:6px}.panel{min-height:0}.speedbox{min-height:160px;padding:8px 0 14px}.speed{font-size:clamp(60px,15vw,88px)}.stat{padding:8px}.stat label{margin-bottom:3px}.actions{margin-top:8px}button{padding:12px 6px}.note{margin-top:7px}.footer{display:none}}
-@media(display-mode:standalone){body{user-select:none}}
+:root{--bg:#050b15;--panel:#091524;--line:#213c59;--blue:#138dff;--cyan:#42d7ff;--muted:#8da6c0;--white:#f2f7ff}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--white);background:radial-gradient(ellipse at 90% 18%,#0b3154 0,transparent 45%),linear-gradient(145deg,#07111f,#030811 78%);overscroll-behavior:none}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.10;background-image:linear-gradient(45deg,#29445e 25%,transparent 25%,transparent 75%,#29445e 75%),linear-gradient(45deg,#29445e 25%,transparent 25%,transparent 75%,#29445e 75%);background-position:0 0,12px 12px;background-size:24px 24px;mask-image:linear-gradient(to bottom,black,transparent 95%)}
+.app{height:100dvh;min-height:0;width:min(100%,560px);margin:auto;padding:clamp(10px,2.3vh,22px) clamp(13px,4vw,22px) max(10px,env(safe-area-inset-bottom));display:flex;flex-direction:column;position:relative;gap:clamp(7px,1.5vh,14px)}
+.header{height:clamp(84px,17vh,142px);flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:9px;border-bottom:1px solid #1b344d;padding-bottom:clamp(7px,1.3vh,14px);min-height:0;position:relative}
+.logo{display:block;width:min(96%,500px);height:100%;object-fit:contain;object-position:center;filter:drop-shadow(0 0 8px rgba(0,111,255,.12))}
+.badge{display:none}
+.dot{display:inline-block;width:6px;height:6px;background:#36e6a0;border-radius:50%;margin-left:4px}
+.hero{flex:0 0 auto}
+.kicker{color:#5bcfff;font-size:clamp(9px,2.5vw,12px);font-weight:900;letter-spacing:clamp(2px,.7vw,4px);margin-bottom:5px}
+h1{font-size:clamp(26px,7vw,39px);letter-spacing:-1.2px;line-height:.98;margin:0 0 7px;font-weight:950}
+h1 span{color:#238eff}
+.sub{margin:0;color:#9bb0c7;font-size:clamp(10px,2.8vw,13px);line-height:1.45;max-width:520px}
+.accent{height:3px;width:clamp(85px,30vw,150px);flex:0 0 3px;background:linear-gradient(90deg,#168cff,#4dd9ff,transparent);border-radius:4px}
+.panel{flex:1 1 auto;min-height:0;border:1px solid #24405e;background:linear-gradient(145deg,rgba(11,24,41,.97),rgba(5,13,24,.98));border-radius:clamp(16px,4vw,22px);padding:clamp(11px,3vw,18px);box-shadow:0 12px 35px #0002;display:flex;flex-direction:column;overflow:hidden}
+.panelhead{display:flex;align-items:center;gap:9px;flex:0 0 auto;margin-bottom:clamp(5px,1.4vh,12px);min-height:32px}
+.num{display:grid;place-items:center;min-width:clamp(32px,8vw,42px);height:clamp(32px,8vw,42px);border-radius:10px;background:linear-gradient(145deg,#159dff,#0754ad);font-weight:950;font-size:clamp(13px,3.5vw,17px);box-shadow:0 5px 16px #007bff30}
+.panelhead strong{font-size:clamp(12px,3.5vw,17px);letter-spacing:-.3px;white-space:nowrap}
+.panelhead small{color:#7894b2;font-size:clamp(9px,2.5vw,11px);font-weight:700;display:block;margin-top:2px}
+.clock{font-variant-numeric:tabular-nums;color:#91a8c1;font-size:clamp(9px,2.5vw,12px);margin-left:auto;text-align:right;line-height:1.5;white-space:nowrap}
+.speedbox{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:clamp(8px,2vh,20px) 0 clamp(10px,2vh,20px)}
+.speedlabel{color:#8ca6c1;font-weight:800;font-size:clamp(9px,2.5vw,12px);letter-spacing:3px}
+.speed{font-size:clamp(72px,21vw,112px);font-weight:950;letter-spacing:-.065em;line-height:1.12;font-variant-numeric:tabular-nums;text-shadow:0 0 32px #168cff25;white-space:nowrap}
+.speed em{font-size:clamp(14px,4vw,19px);font-style:normal;letter-spacing:1px;color:#59ceff;margin-left:7px}
+.status{font-size:clamp(9px,2.5vw,12px);color:#7f9ab6;display:flex;align-items:center;justify-content:center;gap:7px;text-align:center}
+.status i{width:7px;height:7px;flex:0 0 7px;border-radius:50%;background:#f4b74c}
+.status.live i{background:#31e69c;box-shadow:0 0 10px #31e69c}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(6px,1.5vw,10px);flex:0 0 auto}
+.stat{border:1px solid #203a56;border-radius:12px;padding:clamp(8px,2.2vw,13px);background:#07111e;min-height:0}
+.stat label{display:block;color:#8ca6c1;font-size:clamp(9px,2.5vw,12px);line-height:1.25;margin-bottom:5px}
+.stat b{font-size:clamp(18px,5vw,24px);font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stat span{font-size:clamp(9px,2.5vw,12px);color:#5bcfff;margin-left:4px}
+.actions{display:grid;grid-template-columns:1.3fr 1fr;gap:8px;flex:0 0 auto;margin-top:clamp(7px,1.5vh,14px)}
+button{border:0;border-radius:11px;padding:clamp(11px,2.6vh,16px) 8px;font-size:clamp(12px,3.5vw,15px);font-weight:900;letter-spacing:.1px;color:white;cursor:pointer;touch-action:manipulation;white-space:nowrap}
+#start{background:linear-gradient(110deg,#0876df,#168fff);box-shadow:0 7px 20px #007bff2c}
+#reset{background:#0a1727;border:1px solid #2a4562;color:#b7cbe0}
+button:active{transform:scale(.985)}
+.note{flex:0 0 auto;font-size:clamp(8px,2.2vw,10px);color:#7089a4;line-height:1.35;margin:clamp(6px,1.2vh,10px) 1px 0}
+.footer{text-align:center;color:#526d89;font-size:9px;letter-spacing:1.7px;flex:0 0 auto}
+@media (min-width:430px) and (min-height:760px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.stat b{font-size:clamp(16px,4vw,21px)}.stat label{font-size:10px}}
+@media (max-height:650px){.app{gap:5px;padding-top:7px}.header{height:52px}.hero .sub{display:none}.hero h1{font-size:25px}.kicker{font-size:9px}.panelhead{margin-bottom:3px}.speed{font-size:65px}.note{font-size:8px}.stat{padding:6px}.stat label{margin-bottom:2px}.actions{margin-top:5px}.footer{display:none}}
+
+/* Compact header revision */
+.app{gap:clamp(8px,1.6vh,14px);padding-top:max(12px,env(safe-area-inset-top));}
+.header{height:auto;min-height:48px;flex:0 0 auto;justify-content:space-between;align-items:center;gap:8px;padding:0 0 10px;border-bottom:1px solid #1b344d;}
+.brand{display:flex;align-items:baseline;gap:7px;min-width:0;white-space:nowrap;font-style:italic;font-weight:1000;letter-spacing:-.8px;line-height:1;text-transform:uppercase;}
+.brand .srp{font-size:clamp(23px,6.3vw,32px);color:#f4f7ff;text-shadow:0 1px 0 #8ca6c0,0 0 13px #168cff50;}
+.brand .gps{font-size:clamp(16px,4.2vw,22px);letter-spacing:.3px;background:linear-gradient(100deg,#25d9ff,#168bff 65%,#eaf5ff);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:none;}
+.clock{font-variant-numeric:tabular-nums;color:#a9c0d9;font-size:clamp(10px,2.8vw,13px);margin-left:auto;text-align:right;line-height:1.35;white-space:nowrap;flex:0 0 auto;}
+.clock #time{font-weight:850;color:#f2f7ff;font-size:clamp(13px,3.4vw,16px);letter-spacing:.4px;}
+.clock #date{font-size:clamp(9px,2.4vw,11px);color:#8ca6c1;}
+.panelhead{display:none}
+@media(max-height:650px){.app{gap:6px;padding-top:6px}.header{min-height:36px;padding-bottom:6px}.brand .srp{font-size:22px}.brand .gps{font-size:15px}.speed{font-size:65px}}
+
+
+/* Large circular sweep dial: existing large GPS number is centered inside the dial */
+.speedbox{position:relative;isolation:isolate;overflow:visible}
+.speedbox .dial-wrap{
+  position:absolute;z-index:0;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:clamp(320px,94vw,500px);height:clamp(320px,94vw,500px);
+  margin:0;pointer-events:none;filter:drop-shadow(0 0 25px #078cff22);
+}
+.speedbox .dial-wrap svg{width:100%;height:100%;display:block;overflow:visible}
+.speedbox .dial-bg{fill:#06101d;fill-opacity:.2;stroke:#1b3855;stroke-width:1.2}
+.speedbox .dial-track{fill:none;stroke:#122940;stroke-width:13;stroke-linecap:round}
+.speedbox .dial-progress{
+  fill:none;stroke:url(#sweepGradient);stroke-width:13;stroke-linecap:round;
+  stroke-dasharray:0 500;transition:stroke-dasharray .18s linear;filter:url(#sweepGlow)
+}
+.speedbox .dial-tick{stroke:#35536f;stroke-width:1.2;stroke-linecap:round;opacity:.75}
+.speedbox .dial-tick.major{stroke:#8aa9c8;stroke-width:2;opacity:.9}
+.speedbox .dial-tick.hot{stroke:#ff536d}
+.speedbox .dial-label{display:none}
+.speedbox .dial-center{display:none}
+.speedbox .speedlabel,.speedbox .speed,.speedbox .status{position:relative;z-index:1}
+.speedbox .speedlabel{margin-bottom:0}
+.speedbox .speed{font-size:clamp(82px,23vw,124px);line-height:1.05}
+@media(max-height:760px){
+ .speedbox .dial-wrap{width:clamp(280px,76vw,390px);height:clamp(280px,76vw,390px)}
+ .speedbox .speed{font-size:clamp(70px,19vw,100px)}
+}
+@media(max-height:650px){
+ .speedbox .dial-wrap{width:245px;height:245px}
+ .speedbox .speed{font-size:65px}
+}
+
 </style>
 </head>
 <body>
 <main class="app">
-<header class="header"><div class="brand" aria-label="SRP GPS SPEED"><span class="srp">SRP</span><span class="gps">GPS SPEED</span></div><div class="clock"><div id="time">--:--:--</div><div id="date">กำลังโหลดวันที่</div></div></header>
-<section class="panel">
-<div class="speedbox"><div class="speedlabel">CURRENT SPEED</div><div class="speed"><span id="speed">0.0</span><em>km/h</em></div><div class="status" id="status"><i></i><span>พร้อมเริ่มวัดความเร็ว</span></div></div>
-<div class="stats">
-<div class="stat"><label>ระยะทางรวม · DISTANCE</label><b id="distance">0.00</b><span>km</span></div>
-<div class="stat"><label>ความเร็วสูงสุด · MAX</label><b id="max">0.0</b><span>km/h</span></div>
-<div class="stat"><label>ความเร็วเฉลี่ย · AVG</label><b id="avg">0.0</b><span>km/h</span></div>
-<div class="stat"><label>เวลาเดินทาง · TIME</label><b id="elapsed">00:00</b></div>
-</div>
-<div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
-<p class="note">เปิด Location และอนุญาตตำแหน่ง GPS · ต้องเปิดผ่าน HTTPS และแนะนำให้เปิดแอปค้างไว้ขณะวัด</p>
-</section>
-<div class="footer">SRP • GPS SPEED • RIDE WITH DATA</div>
+  <header class="header">
+    <div class="brand" aria-label="SRP GPS SPEED"><span class="srp">SRP</span><span class="gps">GPS SPEED</span></div>
+    <div class="clock" aria-live="off"><div id="time">--:--:--</div><div id="date">กำลังโหลดวันที่</div></div>
+  </header>
+  <section class="panel">
+    <div class="speedbox">
+
+      <div class="dial-wrap" aria-hidden="true">
+        <svg viewBox="0 0 240 240">
+          <defs>
+            <linearGradient id="sweepGradient" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#29f0ff"/>
+              <stop offset="28%" stop-color="#168cff"/>
+              <stop offset="52%" stop-color="#31e69c"/>
+              <stop offset="70%" stop-color="#f5e642"/>
+              <stop offset="84%" stop-color="#ff9d3d"/>
+              <stop offset="100%" stop-color="#ff355d"/>
+            </linearGradient>
+            <filter id="sweepGlow" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <circle class="dial-bg" cx="120" cy="120" r="105"/>
+          <path class="dial-track" d="M 48 169 A 86 86 0 1 1 192 169"/>
+          <path id="dialProgress" class="dial-progress" d="M 48 169 A 86 86 0 1 1 192 169"/>
+          <g id="dialTicks"></g>
+        </svg>
+      </div>
+      <div class="speedlabel">CURRENT SPEED</div>
+      <div class="speed"><span id="speed">0.0</span><em>km/h</em></div>
+      <div class="status" id="status"><i></i><span>พร้อมเริ่มวัดความเร็ว</span></div>
+    </div>
+    <div class="stats">
+      <div class="stat"><label>ระยะทางรวม · DISTANCE</label><b id="distance">0.00</b><span>km</span></div>
+      <div class="stat"><label>ความเร็วสูงสุด · MAX</label><b id="max">0.0</b><span>km/h</span></div>
+      <div class="stat"><label>ความเร็วเฉลี่ย · AVG</label><b id="avg">0.0</b><span>km/h</span></div>
+      <div class="stat"><label>เวลาเดินทาง · TIME</label><b id="elapsed">00:00</b></div>
+    </div>
+    <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
+    <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
+  </section>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA</div>
 </main>
 <script>
-(()=>{'use strict';
-const $=id=>document.getElementById(id);
-const MAX_ACC=40,MIN_KMH=2,STALE_MS=5000;
-let watching=null,running=false,startedAt=0,elapsedBefore=0,lastPos=null,distanceM=0,maxSpeed=0,speedNow=0,lastFixAt=0,tick=null,wake=null;
-const p2=n=>String(n).padStart(2,'0');
-const fmtTime=s=>{s=Math.max(0,Math.floor(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;return h?`${p2(h)}:${p2(m)}:${p2(sec)}`:`${p2(m)}:${p2(sec)}`};
-function updateClock(){const d=new Date();$('time').textContent=d.toLocaleTimeString('th-TH',{hour12:false});$('date').textContent=d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'numeric'});}
-function setStatus(text,live=false){$('status').classList.toggle('live',live);$('status').querySelector('span').textContent=text;}
-function elapsed(){return elapsedBefore+(running?(Date.now()-startedAt)/1000:0);}
-function render(){if(running&&lastFixAt&&Date.now()-lastFixAt>STALE_MS){speedNow=0;setStatus('รอสัญญาณ GPS…');} $('speed').textContent=speedNow.toFixed(1);$('distance').textContent=(distanceM/1000).toFixed(2);$('max').textContent=maxSpeed.toFixed(1);const e=elapsed();$('avg').textContent=(e>0?(distanceM/1000)/(e/3600):0).toFixed(1);$('elapsed').textContent=fmtTime(e);}
-function haversine(a,b){const R=6371000,rad=x=>x*Math.PI/180,dLat=rad(b.lat-a.lat),dLon=rad(b.lon-a.lon),x=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
-async function lockScreen(){try{if('wakeLock'in navigator&&!wake){wake=await navigator.wakeLock.request('screen');wake.addEventListener('release',()=>{wake=null;});}}catch(e){}}
-function unlockScreen(){try{if(wake)wake.release();}catch(e){}wake=null;}
-function onFix(pos){if(!running)return;const c=pos.coords,acc=Number.isFinite(c.accuracy)?c.accuracy:999,now={lat:c.latitude,lon:c.longitude,t:pos.timestamp};lastFixAt=Date.now();if(acc>MAX_ACC){setStatus('สัญญาณ GPS ยังไม่นิ่ง · ±'+Math.round(acc)+' m');return;}
-let step=lastPos?haversine(lastPos,now):0,dt=lastPos?(now.t-lastPos.t)/1000:0,v=null;
-if(c.speed!=null&&Number.isFinite(c.speed)&&c.speed>=0)v=c.speed*3.6;
-else if(lastPos&&dt>0)v=step/dt*3.6;
-if(v==null)v=0;if(v>400||(lastPos&&dt>0&&step/dt*3.6>350))return;
-if(v<MIN_KMH){speedNow=0;lastPos=now;}
-else{speedNow=speedNow>0?speedNow*.3+v*.7:v;if(lastPos&&dt>0&&step>=Math.max(2,Math.min(acc,20)*.3)&&step<250&&step/dt*3.6<350)distanceM+=step;lastPos=now;if(acc<=30&&speedNow>maxSpeed)maxSpeed=speedNow;}
-setStatus('GPS เชื่อมต่อแล้ว · ±'+Math.round(acc)+' m',true);render();}
-function onErr(err){const msg=err.code===1?'ไม่ได้รับอนุญาตให้ใช้ GPS':err.code===2?'ไม่พบสัญญาณ GPS':'หมดเวลารอสัญญาณ GPS';setStatus(msg+' · ตรวจสอบ Location');if(err.code===1)pause();}
-function stopWatch(){if(watching!==null&&navigator.geolocation){navigator.geolocation.clearWatch(watching);watching=null;}}
-function startWatch(){stopWatch();lastPos=null;watching=navigator.geolocation.watchPosition(onFix,onErr,{enableHighAccuracy:true,maximumAge:0,timeout:20000});}
-function start(){if(running)return;if(!navigator.geolocation){setStatus('เบราว์เซอร์นี้ไม่รองรับ GPS');return;}if(!window.isSecureContext){setStatus('ต้องเปิดผ่าน HTTPS (GitHub Pages)');return;}running=true;startedAt=Date.now();lastFixAt=0;speedNow=0;$('start').textContent='Ⅱ  หยุดชั่วคราว';setStatus('กำลังค้นหาสัญญาณ GPS…',true);lockScreen();startWatch();clearInterval(tick);tick=setInterval(render,500);}
-function pause(){if(!running)return;elapsedBefore+=(Date.now()-startedAt)/1000;running=false;speedNow=0;lastPos=null;stopWatch();clearInterval(tick);tick=null;unlockScreen();$('start').textContent='▶  เริ่มต่อ';setStatus('หยุดชั่วคราว');render();}
-function reset(){if((distanceM>50||elapsedBefore>60)&&!confirm('รีเซ็ตข้อมูลการเดินทางทั้งหมด?'))return;pause();elapsedBefore=0;distanceM=0;maxSpeed=0;speedNow=0;lastPos=null;$('start').textContent='▶  เริ่มวัดความเร็ว';setStatus('พร้อมเริ่มวัดความเร็ว');render();}
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&running){lockScreen();startWatch();lastFixAt=0;setStatus('กำลังค้นหาสัญญาณ GPS…',true);}});
-$('start').addEventListener('click',()=>running?pause():start());$('reset').addEventListener('click',reset);
-updateClock();setInterval(updateClock,1000);render();
-window.addEventListener('pagehide',()=>{stopWatch();unlockScreen();});
+(()=>{
+ const $=id=>document.getElementById(id);
+ // ---- tuning ----
+ const MAX_ACC=40;      // ignore fixes less accurate than 40 m
+ const MIN_KMH=2;       // below this = standing still (GPS drift)
+ const STALE_MS=5000;   // no fix for 5 s -> show 0 and warn
+ let watching=null,running=false,startedAt=0,elapsedBefore=0,lastPos=null,distanceM=0,maxSpeed=0,speedNow=0,lastFixAt=0,tick=null,wake=null,prevV=0;
+ const p2=n=>String(n).padStart(2,'0');
+ const fmtTime=s=>{s=Math.max(0,Math.floor(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;return h?`${p2(h)}:${p2(m)}:${p2(sec)}`:`${p2(m)}:${p2(sec)}`};
+ const updateClock=()=>{const d=new Date();$('time').textContent=d.toLocaleTimeString('th-TH',{hour12:false});$('date').textContent=d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'numeric'});};
+ const setStatus=(text,live=false)=>{$('status').classList.toggle('live',live);$('status').querySelector('span').textContent=text;};
+ const elapsed=()=>elapsedBefore+(running?(Date.now()-startedAt)/1000:0);
+ const render=()=>{
+  if(running&&lastFixAt&&Date.now()-lastFixAt>STALE_MS){speedNow=0;setStatus('รอสัญญาณ GPS…');}
+  $('speed').textContent=speedNow.toFixed(1);
+  $('distance').textContent=(distanceM/1000).toFixed(2);
+  $('max').textContent=maxSpeed.toFixed(1);
+  const e=elapsed();
+  $('avg').textContent=(e>0?(distanceM/1000)/(e/3600):0).toFixed(1);
+  $('elapsed').textContent=fmtTime(e);
+ };
+ function haversine(a,b){const R=6371000,rad=x=>x*Math.PI/180,dLat=rad(b.lat-a.lat),dLon=rad(b.lon-a.lon),x=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
+
+ // ---- keep screen on while measuring ----
+ async function lockScreen(){try{if('wakeLock' in navigator&&!wake){wake=await navigator.wakeLock.request('screen');wake.addEventListener('release',()=>{wake=null;});}}catch(e){}}
+ function unlockScreen(){try{wake&&wake.release();}catch(e){}wake=null;}
+
+ // ---- GPS fix handler ----
+ function onFix(pos){
+  if(!running)return;
+  const c=pos.coords,acc=c.accuracy||999;
+  const now={lat:c.latitude,lon:c.longitude,t:pos.timestamp};
+  lastFixAt=Date.now();
+  if(acc>MAX_ACC){setStatus('สัญญาณ GPS ยังไม่นิ่ง · ±'+Math.round(acc)+' m');return;}   // do NOT move lastPos on a bad fix
+
+  // speed (km/h): device Doppler speed first, else from distance/time
+  let v=null,step=0;
+  if(lastPos){step=haversine(lastPos,now);}
+  if(c.speed!=null&&Number.isFinite(c.speed)&&c.speed>=0){v=c.speed*3.6;}
+  else if(lastPos){const dt=(now.t-lastPos.t)/1000;if(dt>0&&step>=Math.max(3,acc*0.5))v=step/dt*3.6;else v=0;}
+  if(v==null)v=0;
+  if(v>400)return;                                   // impossible jump
+  if(lastPos&&(now.t-lastPos.t)>0&&step/((now.t-lastPos.t)/1000)*3.6>350)return; // position teleport
+
+  if(v<MIN_KMH){                                     // standing still: no speed, no distance
+   speedNow=0;prevV=0;lastPos=now;
+  }else{
+   speedNow=speedNow>0?speedNow*0.3+v*0.7:v;         // light smoothing
+   // add distance only for real movement, bigger than the GPS noise
+   if(lastPos){const minStep=Math.max(2,acc*0.3);if(step>=minStep&&step<250){distanceM+=step;lastPos=now;}}
+   else lastPos=now;
+   const cand=Math.min(speedNow,prevV);if(acc<=30&&cand>maxSpeed)maxSpeed=cand;prevV=speedNow;
+  }
+  setStatus('GPS เชื่อมต่อแล้ว · ±'+Math.round(acc)+' m',true);
+  render();
+ }
+ function onErr(err){
+  const msg=err.code===1?'ไม่ได้รับอนุญาตให้ใช้ GPS':err.code===2?'ไม่พบสัญญาณ GPS':'หมดเวลารอสัญญาณ GPS';
+  if(err.code===1)pause();
+  setStatus(msg+' · ตรวจสอบ Location');
+ }
+ function startWatch(){
+  stopWatch();lastPos=null;prevV=0;
+  watching=navigator.geolocation.watchPosition(onFix,onErr,{enableHighAccuracy:true,maximumAge:0,timeout:20000});
+ }
+ function stopWatch(){if(watching!==null&&navigator.geolocation){navigator.geolocation.clearWatch(watching);watching=null;}}
+
+ const start=()=>{
+  if(running)return;
+  if(!navigator.geolocation){setStatus('เบราว์เซอร์นี้ไม่รองรับ GPS');return;}
+  if(!window.isSecureContext){setStatus('ต้องเปิดผ่าน HTTPS (GitHub Pages)');return;}
+  running=true;startedAt=Date.now();lastFixAt=Date.now();speedNow=0;
+  $('start').textContent='Ⅱ  หยุดชั่วคราว';
+  setStatus('กำลังค้นหาสัญญาณ GPS…',true);
+  lockScreen();startWatch();
+  tick=setInterval(render,500);
+ };
+ const pause=()=>{
+  if(!running)return;
+  elapsedBefore+=(Date.now()-startedAt)/1000;
+  running=false;speedNow=0;lastPos=null;
+  stopWatch();clearInterval(tick);tick=null;unlockScreen();
+  $('start').textContent='▶  เริ่มต่อ';setStatus('หยุดชั่วคราว');render();
+ };
+ const reset=()=>{
+  if(distanceM>50&&!confirm('รีเซ็ตข้อมูลการเดินทางทั้งหมด?'))return;
+  pause();elapsedBefore=0;distanceM=0;maxSpeed=0;speedNow=0;lastPos=null;
+  $('start').textContent='▶  เริ่มวัดความเร็ว';setStatus('พร้อมเริ่มวัดความเร็ว');render();
+ };
+
+ // when the app comes back to the front: re-lock screen and restart GPS (browsers may have killed it)
+ document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&running){lockScreen();startWatch();lastFixAt=Date.now();}
+ });
+
+ $('start').addEventListener('click',()=>running?pause():start());
+ $('reset').addEventListener('click',reset);
+ updateClock();setInterval(updateClock,1000);render();
 })();
-if('serviceWorker'in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js',{scope:'./'}).catch(err=>console.error('Service worker registration failed',err)));}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
 </script>
-</body></html>
+</body>
+</html>
