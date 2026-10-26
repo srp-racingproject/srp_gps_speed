@@ -9,9 +9,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="mobile-web-app-capable" content="yes">
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/icon-192.png" type="image/png">
-<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="./manifest.json">
+<link rel="icon" href="./icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="./apple-touch-icon.png">
 <title>SRP GPS SPEED</title>
 <style>
 :root{--bg:#050b15;--panel:#091524;--line:#213c59;--blue:#138dff;--cyan:#42d7ff;--muted:#8da6c0;--white:#f2f7ff}
@@ -162,10 +162,36 @@ button:active{transform:scale(.985)}
  const fmtTime=s=>{s=Math.max(0,Math.floor(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;return h?`${p2(h)}:${p2(m)}:${p2(sec)}`:`${p2(m)}:${p2(sec)}`};
  const updateClock=()=>{const d=new Date();$('time').textContent=d.toLocaleTimeString('th-TH',{hour12:false});$('date').textContent=d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'numeric'});};
  const setStatus=(text,live=false)=>{$('status').classList.toggle('live',live);$('status').querySelector('span').textContent=text;};
- const elapsed=()=>elapsedBefore+(running?(Date.now()-startedAt)/1000:0);
+ 
+  // Gauge scale 0–240 km/h; no numeric labels around the ring.
+  const dialPath=$('dialProgress');
+  const dialTicks=$('dialTicks');
+  const DIAL_MAX=240;
+  if(dialTicks && !dialTicks.childElementCount){
+    for(let i=0;i<=30;i++){
+      const a=(-150+i*10)*Math.PI/180;
+      const r1=92, r2=(i%5===0)?101:97;
+      const line=document.createElementNS('http://www.w3.org/2000/svg','line');
+      line.setAttribute('x1',(120+Math.cos(a)*r1).toFixed(2));
+      line.setAttribute('y1',(120+Math.sin(a)*r1).toFixed(2));
+      line.setAttribute('x2',(120+Math.cos(a)*r2).toFixed(2));
+      line.setAttribute('y2',(120+Math.sin(a)*r2).toFixed(2));
+      line.setAttribute('class','dial-tick'+(i%5===0?' major':''));
+      dialTicks.appendChild(line);
+    }
+  }
+  const updateDial=kmh=>{
+    if(!dialPath)return;
+    const maxArc=Math.PI*86*250/180;
+    const fraction=Math.max(0,Math.min(1,kmh/DIAL_MAX));
+    dialPath.style.strokeDasharray=`${(maxArc*fraction).toFixed(2)} 600`;
+  };
+  
+  const elapsed=()=>elapsedBefore+(running?(Date.now()-startedAt)/1000:0);
  const render=()=>{
   if(running&&lastFixAt&&Date.now()-lastFixAt>STALE_MS){speedNow=0;setStatus('รอสัญญาณ GPS…');}
   $('speed').textContent=speedNow.toFixed(1);
+   updateDial(speedNow);
   $('distance').textContent=(distanceM/1000).toFixed(2);
   $('max').textContent=maxSpeed.toFixed(1);
   const e=elapsed();
@@ -250,7 +276,7 @@ button:active{transform:scale(.985)}
  $('reset').addEventListener('click',reset);
  updateClock();setInterval(updateClock,1000);render();
 })();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
 </script>
 </body>
 </html>
