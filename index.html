@@ -128,7 +128,7 @@ button:active{transform:scale(.985)}
 .menu-item small{display:block;color:#8da6c0;font-size:12px;font-weight:500;margin-top:5px;white-space:normal}
 .graph-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .graph-tools select,.graph-tools button,.secondary-btn{min-height:40px;padding:9px 11px;border-radius:9px;border:1px solid #2a4562;background:#0a1727;color:#e5f2ff;font-size:13px;font-weight:800;max-width:100%}
-.graph-tools select{flex:1 1 160px;min-width:0}
+.graph-tools select{display:none!important}\n.graph-picker-btn{flex:1 1 160px;min-width:0;min-height:48px;padding:10px 12px;border-radius:12px;border:1px solid #2a5279;background:linear-gradient(145deg,#102944,#071525);color:#eaf5ff;font-size:13px;font-weight:800;text-align:left;white-space:normal;display:flex;align-items:center;justify-content:space-between;gap:8px}\n.graph-picker-btn .picker-label{overflow-wrap:anywhere}\n.graph-picker-btn .picker-chevron{color:#54bdff;font-size:17px;flex:0 0 auto}\n.picker-overlay{position:fixed;inset:0;z-index:100020;background:rgba(0,4,12,.78);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:18px}\n.picker-overlay.open{display:flex}\n.picker-panel{width:min(100%,520px);max-height:min(78dvh,680px);display:flex;flex-direction:column;overflow:hidden;border:1px solid #2b5278;border-radius:20px;background:linear-gradient(155deg,#10243a,#050d19);box-shadow:0 24px 70px #000b}\n.picker-head{padding:16px 18px;border-bottom:1px solid #23405d;display:flex;align-items:center;gap:10px}\n.picker-head strong{font-size:17px;flex:1;color:#f1f7ff}\n.picker-close{width:36px;height:36px;padding:0;border:1px solid #2a4562;border-radius:10px;background:#0a1727;color:#e5f2ff;font-size:22px}\n.picker-options{padding:10px;overflow:auto;display:flex;flex-direction:column;gap:8px}\n.picker-option{width:100%;min-height:52px;text-align:left;white-space:normal;line-height:1.4;padding:12px 14px;border:1px solid #203e5b;border-radius:12px;background:#081727;color:#dcecff;font-size:14px;font-weight:700}\n.picker-option.selected{border-color:#168fff;background:linear-gradient(110deg,#073c70,#0b2b4a);box-shadow:inset 3px 0 #28b7ff}\n.picker-option:active{background:#12395b}\n.reset-choice-actions #saveRunBtn{background:linear-gradient(110deg,#0876df,#168fff);border:1px solid #42b0ff;color:#fff;box-shadow:0 5px 18px #0876df55}\n.reset-choice-actions #saveRunBtn:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .graph-tools button.primary{background:linear-gradient(110deg,#0876df,#168fff);border-color:#168fff}
 .graph-card{border:1px solid #203a56;border-radius:12px;background:#06111f;padding:10px;margin-bottom:12px}
 .graph-card h3{font-size:14px;margin:0 0 5px;overflow-wrap:anywhere}
@@ -142,6 +142,11 @@ button:active{transform:scale(.985)}
 #speedDistanceChart{touch-action:pan-y;cursor:crosshair}
 .reset-choice-modal{max-height:90dvh}
 .reset-choice-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.run-name-label{display:block;color:#d7e9fb;font-size:13px;font-weight:700;margin:0 0 7px}
+.run-name-input{display:block;width:100%;box-sizing:border-box;margin:0 0 16px;padding:13px 14px;border-radius:12px;border:1px solid #294968;background:#04101e;color:#fff;font:inherit;outline:none}
+.run-name-input::placeholder{color:#7f96ae;font-size:12px}
+.run-name-input:focus{border-color:#168fff;box-shadow:0 0 0 2px #168fff33}
+
 .reset-choice-actions button{min-height:52px;border-radius:13px;font-weight:800}
 .discard-btn{background:#25131a;border:1px solid #79384b;color:#ffc5d0}
 
@@ -225,7 +230,9 @@ button:active{transform:scale(.985)}
     <div class="modal-body">
       <div class="graph-tools">
         <select id="mainRunSelect" aria-label="เลือกกราฟหลัก"></select>
+        <button type="button" id="mainRunPicker" class="graph-picker-btn"><span class="picker-label">เลือกกราฟหลัก</span><span class="picker-chevron">⌄</span></button>
         <select id="compareRunSelect" aria-label="เลือกไฟล์กราฟเพื่อเปรียบเทียบ"></select>
+        <button type="button" id="compareRunPicker" class="graph-picker-btn"><span class="picker-label">เลือกไฟล์กราฟมาเทียบ</span><span class="picker-chevron">⌄</span></button>
         <button class="primary" id="compareBtn">แอดกราฟเทียบ</button>
         <button id="clearCompareBtn">เอากราฟเทียบออก</button>
       </div>
@@ -246,11 +253,20 @@ button:active{transform:scale(.985)}
   </section>
 </div>
 
+<div id="graphPickerOverlay" class="picker-overlay" role="dialog" aria-modal="true" aria-label="เลือกไฟล์กราฟ">
+  <section class="picker-panel">
+    <header class="picker-head"><strong id="graphPickerTitle">เลือกไฟล์กราฟ</strong><button type="button" class="picker-close" id="closeGraphPicker" aria-label="ปิด">×</button></header>
+    <div id="graphPickerOptions" class="picker-options"></div>
+  </section>
+</div>
+
 <div id="resetChoiceOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เลือกการจัดการผลการวัด">
   <section class="modal reset-choice-modal">
     <header class="modal-head"><h2>จบการวัด</h2><button class="close-btn" id="cancelResetChoice" aria-label="ยกเลิก">×</button></header>
     <div class="modal-body">
-      <p style="margin:0 0 16px;color:#b7cbe0">ต้องการเก็บผลการวิ่งครั้งนี้ไว้เป็นกราฟหรือไม่?</p>
+      <p style="margin:0 0 12px;color:#b7cbe0">ต้องการเก็บผลการวิ่งครั้งนี้ไว้เป็นกราฟหรือไม่?</p>
+      <label for="customRunName" class="run-name-label">ตั้งชื่อไฟล์กราฟ (ไม่บังคับ)</label>
+      <input id="customRunName" class="run-name-input" type="text" maxlength="80" autocomplete="off" placeholder="เว้นว่างเพื่อใช้วันที่และเวลาอัตโนมัติ">
       <div class="reset-choice-actions">
         <button class="primary" id="saveRunBtn">บันทึก</button>
         <button id="discardRunBtn" class="discard-btn">ลบและรีเซ็ต</button>
@@ -281,12 +297,12 @@ button:active{transform:scale(.985)}
    const hour=p2(d.getHours()), minute=p2(d.getMinutes());
    return `${day}/${month}/${year} ${hour}.${minute}น.`;
  }
- function saveCurrentRun(){
+ function saveCurrentRun(customName){
    if(graphSamples.length<2 && distanceM<=0 && maxSpeed<=0)return null;
    const now=new Date();
    const samples=graphSamples.slice();
    if(samples.length===1)samples.push({...samples[0]});
-   const run={id:(Date.now().toString(36)+Math.random().toString(36).slice(2,7)),name:newRunName(now),savedAt:now.toISOString(),dateLabel:stamp(now),distanceKm:+(distanceM/1000).toFixed(4),maxSpeed:+maxSpeed.toFixed(1),avgSpeed:+(elapsed()>0?(distanceM/1000)/(elapsed()/3600):0).toFixed(1),elapsedSec:Math.floor(elapsed()),samples};
+   const run={id:(Date.now().toString(36)+Math.random().toString(36).slice(2,7)),name:(String(customName||'').trim().slice(0,80)||newRunName(now)),savedAt:now.toISOString(),dateLabel:stamp(now),distanceKm:+(distanceM/1000).toFixed(4),maxSpeed:+maxSpeed.toFixed(1),avgSpeed:+(elapsed()>0?(distanceM/1000)/(elapsed()/3600):0).toFixed(1),elapsedSec:Math.floor(elapsed()),samples};
    savedRuns.unshift(run);savedRuns=savedRuns.slice(0,100);persistRuns();return run;
  }
  // ---- tuning ----
@@ -409,7 +425,7 @@ button:active{transform:scale(.985)}
   $('start').textContent='▶  เริ่มวัดความเร็ว';setStatus(statusText||'พร้อมเริ่มวัดความเร็ว');render();
  };
  const finishReset=(shouldSave)=>{
-  const saved=shouldSave?saveCurrentRun():null;
+  const saved=shouldSave?saveCurrentRun($('customRunName').value):null;
   clearCurrentRun(shouldSave?(saved?'บันทึกกราฟแล้ว · พร้อมเริ่มวัดความเร็ว':'ไม่มีข้อมูลให้บันทึก · พร้อมเริ่มวัดความเร็ว'):'ลบผลรอบนี้แล้ว · พร้อมเริ่มวัดความเร็ว');
   if(saved){currentGraphId=saved.id;compareGraphId=null;refreshGraphUI();}
   $('resetChoiceOverlay').classList.remove('open');
@@ -417,6 +433,7 @@ button:active{transform:scale(.985)}
  const reset=()=>{
   if(running)pause();
   if(!hasRunData()){clearCurrentRun('พร้อมเริ่มวัดความเร็ว');return;}
+  $('customRunName').value='';
   $('resetChoiceOverlay').classList.add('open');
  };
 
@@ -436,6 +453,26 @@ button:active{transform:scale(.985)}
    const opt=document.createElement('option');opt.value='';opt.textContent=placeholder;sel.appendChild(opt);
    items.forEach(r=>{const o=document.createElement('option');o.value=r.id;o.textContent=runLabel(r);sel.appendChild(o);});
    if(selected&&items.some(r=>r.id===selected))sel.value=selected;
+   const btn=$(sel.id==='mainRunSelect'?'mainRunPicker':'compareRunPicker');
+   const chosen=items.find(r=>r.id===sel.value);
+   btn.querySelector('.picker-label').textContent=chosen?runLabel(chosen):placeholder;
+   btn.setAttribute('aria-label',chosen?runLabel(chosen):placeholder);
+ }
+ let activePickerSelect=null;
+ function openGraphPicker(selectId,title){
+   const sel=$(selectId),overlay=$('graphPickerOverlay'),options=$('graphPickerOptions');
+   activePickerSelect=sel; $('graphPickerTitle').textContent=title; options.innerHTML='';
+   [...sel.options].forEach(opt=>{
+     const b=document.createElement('button');b.type='button';b.className='picker-option'+(opt.value===sel.value?' selected':'');
+     b.textContent=opt.textContent;
+     b.addEventListener('click',()=>{
+       sel.value=opt.value;
+       sel.dispatchEvent(new Event('change',{bubbles:true}));
+       overlay.classList.remove('open');activePickerSelect=null;
+     });
+     options.appendChild(b);
+   });
+   overlay.classList.add('open');
  }
  function refreshGraphUI(){
    savedRuns=loadRuns();
@@ -546,10 +583,14 @@ button:active{transform:scale(.985)}
  $('closeGraph').addEventListener('click',()=>closeOverlay(graphOverlay));
  $('backToMenu').addEventListener('click',()=>{closeOverlay(graphOverlay);openOverlay(menuOverlay);});
  [menuOverlay,graphOverlay].forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOverlay(o);}));
+ $('mainRunPicker').addEventListener('click',()=>openGraphPicker('mainRunSelect','เลือกกราฟหลัก'));
+ $('compareRunPicker').addEventListener('click',()=>openGraphPicker('compareRunSelect','เลือกไฟล์กราฟมาเทียบ'));
+ $('closeGraphPicker').addEventListener('click',()=>{$('graphPickerOverlay').classList.remove('open');activePickerSelect=null;});
+ $('graphPickerOverlay').addEventListener('click',e=>{if(e.target===$('graphPickerOverlay')){$('graphPickerOverlay').classList.remove('open');activePickerSelect=null;}});
  $('mainRunSelect').addEventListener('change',e=>{currentGraphId=e.target.value||null;if(compareGraphId===currentGraphId)compareGraphId=null;refreshGraphUI();});
  $('compareBtn').addEventListener('click',()=>{const id=$('compareRunSelect').value;if(!id){alert('เลือกไฟล์กราฟที่ต้องการเปรียบเทียบก่อน');return;}if(id===currentGraphId){alert('เลือกไฟล์อื่นที่ไม่ใช่กราฟหลัก');return;}compareGraphId=id;drawGraph();});
  $('clearCompareBtn').addEventListener('click',()=>{compareGraphId=null;refreshGraphUI();});
- document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeOverlay(menuOverlay);closeOverlay(graphOverlay);}});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeOverlay(menuOverlay);closeOverlay(graphOverlay);$('graphPickerOverlay').classList.remove('open');$('resetChoiceOverlay').classList.remove('open');}});
  $('start').addEventListener('click',()=>running?pause():start());
  $('reset').addEventListener('click',reset);
  $('saveRunBtn').addEventListener('click',()=>finishReset(true));
