@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050b15">
-<meta name="app-version" content="1.0.15">
+<meta name="app-version" content="1.0.29">
 <meta name="application-name" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-title" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -385,6 +385,210 @@ body:before{
 .graph-picker-btn:hover,.menu-item:hover,.picker-option:hover{border-color:#3476a6}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
 
+
+/* SRP GPS SPEED v1.0.21 — thinner, brighter multitone edge glow */
+:root{--edge-cyan:#57eaff;--edge-blue:#168cff;--edge-violet:#667dff}
+/* Thin gradient rim: keeps the existing dark surfaces and depth intact */
+.panel,.stat,.modal,.picker-panel,.srp-dialog,.graph-card,.menu-item,
+.graph-picker-btn,.picker-option,.saved-run,.close-btn,.picker-close,
+#start,#reset,.graph-tools #compareBtn,.graph-tools #clearCompareBtn,
+.reset-choice-actions button,.srp-dialog-actions button{
+  position:relative;
+}
+.panel:after,.stat:after,.modal:after,.picker-panel:after,.srp-dialog:after,
+.graph-card:after,.menu-item:after,.graph-picker-btn:after,.picker-option:after,
+.saved-run:after,.close-btn:after,.picker-close:after,
+#start:after,#reset:after,.graph-tools #compareBtn:after,
+.graph-tools #clearCompareBtn:after,.reset-choice-actions button:after,
+.srp-dialog-actions button:after{
+  content:"";position:absolute;inset:0;border-radius:inherit;padding:.2px;
+  background:linear-gradient(128deg,
+    rgba(180,250,255,1) 0%,
+    rgba(34,177,255,1) 23%,
+    rgba(130,143,255,.98) 48%,
+    rgba(32,151,255,1) 70%,
+    rgba(170,250,255,1) 100%);
+  -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;
+  pointer-events:none;opacity:.98;
+}
+.panel{
+  border-color:rgba(70,190,255,.42)!important;
+  box-shadow:0 22px 58px rgba(0,0,0,.58),0 0 14px rgba(23,145,255,.23),
+    0 0 30px rgba(37,192,255,.15),inset 0 1px 0 rgba(130,210,255,.08)!important;
+}
+.panel:after{opacity:1;padding:.2px;background:linear-gradient(132deg,
+  #c7fbff 0%,#32baff 22%,#9aa5ff 47%,#2d9cff 70%,#b9fbff 100%);filter:drop-shadow(0 0 2px rgba(69,208,255,.95)) drop-shadow(0 0 7px rgba(32,139,255,.55))}
+.stat,.graph-card,.menu-item,.graph-picker-btn,.picker-option,.saved-run{
+  border-color:rgba(53,142,211,.4)!important;
+  box-shadow:0 0 10px rgba(22,140,255,.2),0 0 20px rgba(45,193,255,.09),inset 0 1px 0 rgba(155,222,255,.04);
+}
+.stat:after,.graph-card:after,.menu-item:after,.graph-picker-btn:after,
+.picker-option:after,.saved-run:after{opacity:1;filter:drop-shadow(0 0 2px rgba(69,208,255,.9)) drop-shadow(0 0 6px rgba(32,139,255,.5))}
+.modal,.picker-panel,.srp-dialog{
+  border-color:rgba(48,154,228,.45)!important;
+  box-shadow:0 24px 80px rgba(0,0,0,.72),0 0 22px rgba(22,140,255,.22),
+    inset 0 1px 0 rgba(150,220,255,.08)!important;
+}
+.modal:after,.picker-panel:after,.srp-dialog:after{opacity:1;filter:drop-shadow(0 0 2px rgba(69,208,255,.9)) drop-shadow(0 0 7px rgba(32,139,255,.5))}
+#start,.graph-tools #compareBtn,.reset-choice-actions #saveRunBtn,
+.srp-dialog-actions .dialog-primary{
+  box-shadow:0 0 0 1px rgba(75,200,255,.22),0 0 16px rgba(22,140,255,.22),
+    0 7px 20px rgba(0,80,190,.22),inset 0 1px 0 rgba(255,255,255,.2)!important;
+}
+#start:after,.graph-tools #compareBtn:after,.reset-choice-actions #saveRunBtn:after,
+.srp-dialog-actions .dialog-primary:after{opacity:.9}
+#reset,.close-btn,.picker-close{
+  border-color:rgba(61,145,203,.68)!important;
+  box-shadow:0 0 10px rgba(22,140,255,.08),inset 0 1px 0 rgba(150,220,255,.07);
+}
+#reset:after,.close-btn:after,.picker-close:after{opacity:.68}
+.graph-tools #clearCompareBtn:after{opacity:.68;background:linear-gradient(130deg,#ff9caf,#a94b60,#657dff,#ff9caf)}
+@media(prefers-reduced-motion:reduce){.panel:after,.stat:after,.modal:after,.picker-panel:after,.srp-dialog:after,.graph-card:after,.menu-item:after,.graph-picker-btn:after,.picker-option:after,.saved-run:after,#start:after,#reset:after{transition:none}}
+
+
+
+/* SRP GPS SPEED v1.0.23 — true blue fills, brighter orange, keep the glow */
+#start, .graph-tools #compareBtn {
+  background:linear-gradient(145deg,#0878df 0%,#0668c9 52%,#0757ad 100%) !important;
+  border-color:#2395f5 !important;
+  color:#f5fbff !important;
+  box-shadow:0 4px 12px rgba(0,105,225,.22),inset 0 1px 0 rgba(210,240,255,.16) !important;
+}
+#start:after, .graph-tools #compareBtn:after {
+  opacity:1 !important;
+  filter:drop-shadow(0 0 2px rgba(69,208,255,.95)) drop-shadow(0 0 7px rgba(32,139,255,.58)) !important;
+  background:linear-gradient(128deg,#9cf5ff 0%,#25b8ff 24%,#628bff 48%,#178cff 72%,#a2f4ff 100%) !important;
+}
+.graph-tools #clearCompareBtn.clear-compare-btn {
+  background:linear-gradient(145deg,#f08a27 0%,#df7416 52%,#c95e0a 100%) !important;
+  border-color:#ffad54 !important;
+  color:#fff8ed !important;
+  box-shadow:0 4px 12px rgba(222,103,10,.16),inset 0 1px 0 rgba(255,240,218,.12) !important;
+}
+.graph-tools #clearCompareBtn:after {
+  opacity:.72 !important;
+  filter:drop-shadow(0 0 2px rgba(255,171,82,.7)) drop-shadow(0 0 5px rgba(240,126,24,.32)) !important;
+  background:linear-gradient(130deg,#ffe0a8 0%,#ff9a3b 35%,#ef7a20 65%,#ffd08a 100%) !important;
+}
+
+
+/* SRP GPS SPEED v1.0.28 — corner radii reduced by 10%; frame glow and rim thickness preserved */
+.panel{border-radius:clamp(23.4px,5.85vw,30.6px)!important}
+.stat,.graph-card{border-radius:18.9px!important}
+.modal{border-radius:26.1px!important}
+.picker-panel{border-radius:27.9px!important}
+.srp-dialog{border-radius:30.6px!important}
+.menu-item,.graph-picker-btn,.picker-option{border-radius:18.9px!important}
+.saved-run{border-radius:16.2px!important}
+.close-btn,.picker-close{border-radius:16.2px!important}
+#start,#reset,.graph-tools #compareBtn,.graph-tools #clearCompareBtn,
+.reset-choice-actions button,.srp-dialog-actions button{border-radius:18.9px!important}
+
+
+/* SRP GPS SPEED v1.0.28 — corner radii reduced by 10%; preserve glow, colors and rims */
+.panel{
+  box-shadow:0 22px 58px rgba(0,0,0,.58),0 0 14px rgba(23,145,255,.184),
+    0 0 30px rgba(37,192,255,.12),inset 0 1px 0 rgba(130,210,255,.064)!important;
+}
+.panel:after{filter:drop-shadow(0 0 2px rgba(69,208,255,.76)) drop-shadow(0 0 7px rgba(32,139,255,.44))!important}
+.stat,.graph-card,.menu-item,.graph-picker-btn,.picker-option,.saved-run{
+  box-shadow:0 0 10px rgba(22,140,255,.16),0 0 20px rgba(45,193,255,.072),inset 0 1px 0 rgba(155,222,255,.04)!important;
+}
+.stat:after,.graph-card:after,.menu-item:after,.graph-picker-btn:after,
+.picker-option:after,.saved-run:after{filter:drop-shadow(0 0 2px rgba(69,208,255,.72)) drop-shadow(0 0 6px rgba(32,139,255,.4))!important}
+.modal,.picker-panel,.srp-dialog{
+  box-shadow:0 24px 80px rgba(0,0,0,.72),0 0 22px rgba(22,140,255,.176),
+    inset 0 1px 0 rgba(150,220,255,.064)!important;
+}
+.modal:after,.picker-panel:after,.srp-dialog:after{filter:drop-shadow(0 0 2px rgba(69,208,255,.72)) drop-shadow(0 0 7px rgba(32,139,255,.4))!important}
+#start:after,.graph-tools #compareBtn:after{
+  filter:drop-shadow(0 0 2px rgba(69,208,255,.76)) drop-shadow(0 0 7px rgba(32,139,255,.464))!important;
+}
+#start,.graph-tools #compareBtn{
+  box-shadow:0 0 0 1px rgba(75,200,255,.176),0 0 16px rgba(22,140,255,.176),
+    0 7px 20px rgba(0,80,190,.22),inset 0 1px 0 rgba(255,255,255,.2)!important;
+}
+.graph-tools #clearCompareBtn:after{filter:drop-shadow(0 0 2px rgba(255,171,82,.56)) drop-shadow(0 0 5px rgba(240,126,24,.256))!important}
+/* End v1.0.27 */
+
+
+/* v1.0.29: soften only bold Thai glyphs; Latin text, numbers, and already-light text remain unchanged */
+.thai-bold-soft{font-weight:600!important;letter-spacing:normal}
+
+/* SRP GPS SPEED v1.0.30 — frame color brightness -20%; surrounding glow intensity -15% more */
+/* Reduce the colored rim itself without changing panel fills or layout. */
+.panel:after,.stat:after,.modal:after,.picker-panel:after,.srp-dialog:after,
+.graph-card:after,.menu-item:after,.graph-picker-btn:after,.picker-option:after,
+.saved-run:after,.close-btn:after,.picker-close:after,
+#start:after,#reset:after,.graph-tools #compareBtn:after,
+.graph-tools #clearCompareBtn:after,.reset-choice-actions button:after,
+.srp-dialog-actions button:after{opacity:.78!important}
+/* Border strokes: reduce their color intensity by about 20%. */
+.panel{border-color:rgba(70,190,255,.336)!important}
+.stat,.graph-card,.menu-item,.graph-picker-btn,.picker-option,.saved-run{border-color:rgba(53,142,211,.32)!important}
+.modal,.picker-panel,.srp-dialog{border-color:rgba(48,154,228,.36)!important}
+#reset,.close-btn,.picker-close{border-color:rgba(61,145,203,.544)!important}
+/* Additional 15% reduction to the glow around frames, on top of the rim dimming. */
+.panel{box-shadow:0 22px 58px rgba(0,0,0,.58),0 0 14px rgba(23,145,255,.1955),0 0 30px rgba(37,192,255,.1275),inset 0 1px 0 rgba(130,210,255,.068)!important}
+.panel:after{filter:brightness(.85) drop-shadow(0 0 2px rgba(69,208,255,.8075)) drop-shadow(0 0 7px rgba(32,139,255,.4675))!important}
+.stat,.graph-card,.menu-item,.graph-picker-btn,.picker-option,.saved-run{box-shadow:0 0 10px rgba(22,140,255,.17),0 0 20px rgba(45,193,255,.0765),inset 0 1px 0 rgba(155,222,255,.04)!important}
+.stat:after,.graph-card:after,.menu-item:after,.graph-picker-btn:after,.picker-option:after,.saved-run:after{filter:brightness(.85) drop-shadow(0 0 2px rgba(69,208,255,.765)) drop-shadow(0 0 6px rgba(32,139,255,.425))!important}
+.modal,.picker-panel,.srp-dialog{box-shadow:0 24px 80px rgba(0,0,0,.72),0 0 22px rgba(22,140,255,.187),inset 0 1px 0 rgba(150,220,255,.068)!important}
+.modal:after,.picker-panel:after,.srp-dialog:after{filter:brightness(.85) drop-shadow(0 0 2px rgba(69,208,255,.765)) drop-shadow(0 0 7px rgba(32,139,255,.425))!important}
+#start,.graph-tools #compareBtn,.reset-choice-actions #saveRunBtn,.srp-dialog-actions .dialog-primary{box-shadow:0 0 0 1px rgba(75,200,255,.187),0 0 16px rgba(22,140,255,.187),0 7px 20px rgba(0,80,190,.187),inset 0 1px 0 rgba(255,255,255,.2)!important}
+#start:after,.graph-tools #compareBtn:after,.reset-choice-actions #saveRunBtn:after,.srp-dialog-actions .dialog-primary:after{filter:brightness(.85) drop-shadow(0 0 2px rgba(69,208,255,.8075)) drop-shadow(0 0 7px rgba(32,139,255,.493))!important}
+#reset,.close-btn,.picker-close{box-shadow:0 0 10px rgba(22,140,255,.068),inset 0 1px 0 rgba(150,220,255,.07)!important}
+.graph-tools #clearCompareBtn:after{filter:brightness(.85) drop-shadow(0 0 2px rgba(255,171,82,.476)) drop-shadow(0 0 5px rgba(240,126,24,.2176))!important}
+/* End v1.0.30 */
+
+
+/* SRP GPS SPEED v1.0.31 — surrounding frame glow reduced to 5% of v1.0.30; rim colors and widths preserved */
+.panel{box-shadow:0 12px 35px #0002,0 0 14px rgba(23,145,255,.009775),0 0 30px rgba(37,192,255,.006375),inset 0 1px 0 rgba(130,210,255,.068)!important}
+.panel:after{filter:brightness(.85) drop-shadow(0 0 2px rgba(69,208,255,.040375)) drop-shadow(0 0 7px rgba(32,139,255,.023375))!important}
+.stat,.graph-card,.menu-item,.graph-picker-btn,.picker-option,.saved-run{box-shadow:0 0 10px rgba(22,140,255,.0085),0 0 20px rgba(45,193,255,.003825),inset 0 1px 0 rgba(155,222,255,.04)!important}
+.stat:after,.graph-card:after,.menu-item:after,.graph-picker-btn:after,.picker-option:after,.saved-run:after{filter:brightness(.85) drop-shadow(0 0 2px rgba(69,208,255,.03825)) drop-shadow(0 0 6px rgba(32,139,255,.02125))!important}
+.modal,.picker-panel,.srp-dialog{box-shadow:0 20px 70px #0009,0 0 22px rgba(22,140,255,.00935),inset 0 1px 0 rgba(150,220,255,.068)!important}
+.modal:after,.picker-panel:after,.srp-dialog:after{filter:brightness(.85) drop-shadow(0 0 2px rgba(69,208,255,.03825)) drop-shadow(0 0 7px rgba(32,139,255,.02125))!important}
+#start,.graph-tools #compareBtn,.reset-choice-actions #saveRunBtn,.srp-dialog-actions .dialog-primary{box-shadow:0 0 0 1px rgba(75,200,255,.00935),0 0 16px rgba(22,140,255,.00935),0 7px 20px rgba(0,80,190,.00935),inset 0 1px 0 rgba(255,255,255,.2)!important}
+#start:after,.graph-tools #compareBtn:after,.reset-choice-actions #saveRunBtn:after,.srp-dialog-actions .dialog-primary:after{filter:brightness(.85) drop-shadow(0 0 2px rgba(69,208,255,.040375)) drop-shadow(0 0 7px rgba(32,139,255,.02465))!important}
+#reset,.close-btn,.picker-close{box-shadow:0 0 10px rgba(22,140,255,.0034),inset 0 1px 0 rgba(150,220,255,.07)!important}
+.graph-tools #clearCompareBtn:after{filter:brightness(.85) drop-shadow(0 0 2px rgba(255,171,82,.0238)) drop-shadow(0 0 5px rgba(240,126,24,.01088))!important}
+
+/* SRP GPS SPEED v1.0.41 — GPU-friendly close rendering */
+:root{--srp-motion-ease:cubic-bezier(.1712,1,.3,1)}
+/* Keep the page visible through a persistent dark, blurred glass layer. */
+.overlay,.picker-overlay,#srpDialogOverlay{
+  background-color:rgba(2,7,15,.70)!important;
+  -webkit-backdrop-filter:blur(12px) saturate(112%)!important;
+  backdrop-filter:blur(12px) saturate(112%)!important;
+}
+@keyframes srpExpandFromTap{
+  0%{opacity:.18;transform:translate3d(0,0,0) scale(.78)}
+  100%{opacity:1;transform:translate3d(0,0,0) scale(1)}
+}
+.overlay.open .modal,.picker-overlay.open .picker-panel,#srpDialogOverlay.open .srp-dialog{
+  animation:srpExpandFromTap 1120ms var(--srp-motion-ease) both!important;
+  transform-origin:var(--srp-origin-x,50%) var(--srp-origin-y,50%)!important;
+  will-change:transform,opacity;
+  backface-visibility:hidden;
+}
+/* Closing returns to the saved opening tap point, about 20.8% faster than opening (10% faster than v1.0.39). */
+.overlay.closing .modal,.picker-overlay.closing .picker-panel,#srpDialogOverlay.closing .srp-dialog{
+  animation:srpExpandFromTap 887ms var(--srp-motion-ease) reverse both!important;
+  transform-origin:var(--srp-origin-x,50%) var(--srp-origin-y,50%)!important;
+  will-change:transform,opacity;
+  backface-visibility:hidden;
+}
+/* Smooth, restrained feedback for all buttons; animation changes only transform/visual properties. */
+button:not(:disabled){transition:transform 600ms var(--srp-motion-ease),filter 600ms ease,box-shadow 600ms ease,border-color 520ms ease,background-color 520ms ease!important}
+button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
+.menu-item:active,.picker-option:active,.graph-picker-btn:active{transform:scale(.99)}
+@media(prefers-reduced-motion:reduce){
+ .overlay.open .modal,.picker-overlay.open .picker-panel,#srpDialogOverlay.open .srp-dialog{animation:none!important;will-change:auto}
+ button:not(:disabled),button:not(:disabled):active{transition:none!important;transform:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -548,7 +752,33 @@ body:before{
  let savedRuns=loadRuns();
  let currentGraphId=null,compareGraphId=null;
  function loadRuns(){try{const v=JSON.parse(localStorage.getItem(RUNS_KEY)||'[]');return Array.isArray(v)?v:[];}catch(e){return[];}}
- function appDialog(message,{title='แจ้งเตือน',confirm=false,danger=false}={}){return new Promise(resolve=>{const ov=$('srpDialogOverlay'),actions=$('srpDialogActions');$('srpDialogTitle').textContent=title;$('srpDialogMessage').textContent=message;actions.innerHTML='';const finish=value=>{ov.classList.remove('open');resolve(value);};if(confirm){const cancel=document.createElement('button');cancel.textContent='ยกเลิก';cancel.addEventListener('click',()=>finish(false));actions.appendChild(cancel);}const ok=document.createElement('button');ok.textContent=confirm?(danger?'ลบไฟล์':'ตกลง'):'ตกลง';ok.className='dialog-primary'+(danger?' dialog-danger':'');ok.addEventListener('click',()=>finish(true));actions.appendChild(ok);ov.classList.add('open');ok.focus();});}
+ function closeOverlay(el){
+  if(!el||!el.classList.contains('open')||el.classList.contains('closing'))return;
+  const panel=el.querySelector('.modal,.picker-panel,.srp-dialog');
+  if(!panel){el.classList.remove('open','closing');return;}
+  // The opening origin is saved once when the overlay opens; never recalculate it on close.
+  let finished=false;
+  let fallbackTimer=0;
+  const finish=()=>{
+   if(finished)return;
+   finished=true;
+   window.clearTimeout(fallbackTimer);
+   panel.removeEventListener('animationend',onEnd);
+   if(el.classList.contains('closing'))el.classList.remove('open','closing');
+  };
+  const onEnd=e=>{
+   if(e.target===panel&&e.animationName==='srpExpandFromTap'&&el.classList.contains('closing'))finish();
+  };
+  panel.addEventListener('animationend',onEnd);
+  // Start on the next frame so the browser can commit the current visual state first.
+  requestAnimationFrame(()=>{
+   if(finished||!el.classList.contains('open'))return;
+   el.classList.add('closing');
+   // Fallback only in case the browser drops animationend; leave slack beyond the 887ms close.
+   fallbackTimer=window.setTimeout(finish,1250);
+  });
+ }
+ function appDialog(message,{title='แจ้งเตือน',confirm=false,danger=false}={}){return new Promise(resolve=>{const ov=$('srpDialogOverlay'),actions=$('srpDialogActions');$('srpDialogTitle').textContent=title;$('srpDialogMessage').textContent=message;actions.innerHTML='';const finish=value=>{closeOverlay(ov);resolve(value);};if(confirm){const cancel=document.createElement('button');cancel.textContent='ยกเลิก';cancel.addEventListener('click',()=>finish(false));actions.appendChild(cancel);}const ok=document.createElement('button');ok.textContent=confirm?(danger?'ลบไฟล์':'ตกลง'):'ตกลง';ok.className='dialog-primary'+(danger?' dialog-danger':'');ok.addEventListener('click',()=>finish(true));actions.appendChild(ok);ov.classList.add('open');ok.focus();});}
  function persistRuns(){try{localStorage.setItem(RUNS_KEY,JSON.stringify(savedRuns));}catch(e){appDialog('พื้นที่จัดเก็บข้อมูลเต็ม ไม่สามารถบันทึกกราฟได้');}}
  function stamp(d){return d.toLocaleString('th-TH',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});}
  function newRunName(d){
@@ -764,7 +994,7 @@ body:before{
   const saved=shouldSave?saveCurrentRun($('customRunName').value):null;
   clearCurrentRun(shouldSave?(saved?'บันทึกกราฟแล้ว · พร้อมเริ่มวัดความเร็ว':'ไม่มีข้อมูลให้บันทึก · พร้อมเริ่มวัดความเร็ว'):'ลบผลรอบนี้แล้ว · พร้อมเริ่มวัดความเร็ว');
   if(saved){currentGraphId=saved.id;compareGraphId=null;refreshGraphUI();}
-  $('resetChoiceOverlay').classList.remove('open');
+  closeOverlay($('resetChoiceOverlay'));
  };
  const reset=()=>{
   if(running)pause();
@@ -781,7 +1011,6 @@ body:before{
  // ---- graph analysis UI ----
  const menuOverlay=$('menuOverlay'),graphOverlay=$('graphOverlay'),settingsOverlay=$('settingsOverlay');
  function openOverlay(el){el.classList.add('open');}
- function closeOverlay(el){el.classList.remove('open');}
  // Switch overlays atomically: reveal the destination before hiding the source,
  // so the home screen is never painted between panels. Both changes happen in one task.
  function switchOverlay(from,to){to.classList.add('open');from.classList.remove('open');}
@@ -807,7 +1036,7 @@ body:before{
      b.addEventListener('click',()=>{
        sel.value=opt.value;
        sel.dispatchEvent(new Event('change',{bubbles:true}));
-       overlay.classList.remove('open');activePickerSelect=null;
+       closeOverlay(overlay);activePickerSelect=null;
      });
      options.appendChild(b);
    });
@@ -929,19 +1158,19 @@ body:before{
  [menuOverlay,graphOverlay,settingsOverlay].forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOverlay(o);}));
  $('mainRunPicker').addEventListener('click',()=>openGraphPicker('mainRunSelect','กราฟหลัก'));
  $('compareRunPicker').addEventListener('click',()=>openGraphPicker('compareRunSelect','กราฟเทียบ'));
- $('closeGraphPicker').addEventListener('click',()=>{$('graphPickerOverlay').classList.remove('open');activePickerSelect=null;});
- $('graphPickerOverlay').addEventListener('click',e=>{if(e.target===$('graphPickerOverlay')){$('graphPickerOverlay').classList.remove('open');activePickerSelect=null;}});
+ $('closeGraphPicker').addEventListener('click',()=>{closeOverlay($('graphPickerOverlay'));activePickerSelect=null;});
+ $('graphPickerOverlay').addEventListener('click',e=>{if(e.target===$('graphPickerOverlay')){closeOverlay($('graphPickerOverlay'));activePickerSelect=null;}});
  $('mainRunSelect').addEventListener('change',e=>{currentGraphId=e.target.value||null;if(compareGraphId===currentGraphId)compareGraphId=null;refreshGraphUI();});
  $('compareRunSelect').addEventListener('change',()=>{const sel=$('compareRunSelect'),chosen=savedRuns.find(r=>r.id===sel.value);const btn=$('compareRunPicker');btn.querySelector('.picker-label').textContent=chosen?runLabel(chosen):'กราฟเทียบ';btn.setAttribute('aria-label',chosen?runLabel(chosen):'กราฟเทียบ');});
  $('compareBtn').addEventListener('click',async()=>{const id=$('compareRunSelect').value;if(!id){await appDialog('กรุณาเลือกไฟล์กราฟที่ต้องการเปรียบเทียบก่อน',{title:'ยังไม่ได้เลือกกราฟ'});return;}if(id===currentGraphId){await appDialog('กรุณาเลือกไฟล์กราฟอื่นที่ไม่ใช่กราฟหลัก',{title:'เลือกกราฟคนละไฟล์'});return;}compareGraphId=id;drawGraph();});
  $('clearCompareBtn').addEventListener('click',()=>{compareGraphId=null;refreshGraphUI();});
- document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeOverlay(menuOverlay);closeOverlay(graphOverlay);closeOverlay(settingsOverlay);$('graphPickerOverlay').classList.remove('open');$('resetChoiceOverlay').classList.remove('open');if($('srpDialogOverlay').classList.contains('open'))$('srpDialogOverlay').classList.remove('open');}});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeOverlay(menuOverlay);closeOverlay(graphOverlay);closeOverlay(settingsOverlay);closeOverlay($('graphPickerOverlay'));closeOverlay($('resetChoiceOverlay'));if($('srpDialogOverlay').classList.contains('open'))closeOverlay($('srpDialogOverlay'));}});
  $('start').addEventListener('click',()=>running?pause():start());
  $('reset').addEventListener('click',reset);
  $('saveRunBtn').addEventListener('click',()=>finishReset(true));
  $('discardRunBtn').addEventListener('click',()=>finishReset(false));
- $('cancelResetChoice').addEventListener('click',()=>$('resetChoiceOverlay').classList.remove('open'));
- $('resetChoiceOverlay').addEventListener('click',e=>{if(e.target===$('resetChoiceOverlay'))$('resetChoiceOverlay').classList.remove('open');});
+ $('cancelResetChoice').addEventListener('click',()=>closeOverlay($('resetChoiceOverlay')));
+ $('resetChoiceOverlay').addEventListener('click',e=>{if(e.target===$('resetChoiceOverlay'))closeOverlay($('resetChoiceOverlay'));});
  updateClock();setInterval(updateClock,1000);render();refreshGraphUI();
 })();
 if('serviceWorker' in navigator){
@@ -959,5 +1188,84 @@ if('serviceWorker' in navigator){
  });
 }
 </script>
+
+<script>
+/* Keep the typography adjustment limited to Thai runs inside bold text. */
+(function(){
+  const thaiRE = /[\u0E00-\u0E7F]/;
+  const runRE = /[\u0E00-\u0E7F]+/g;
+  const skipTags = new Set(['SCRIPT','STYLE','TEXTAREA','INPUT','OPTION','SELECT']);
+  function soften(root){
+    if(!root) return;
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,{
+      acceptNode(node){
+        if(!node.nodeValue || !thaiRE.test(node.nodeValue)) return NodeFilter.FILTER_REJECT;
+        let el=node.parentElement;
+        if(!el || el.closest('.thai-bold-soft') || el.closest('[contenteditable="true"]')) return NodeFilter.FILTER_REJECT;
+        while(el && el!==document.body){
+          if(skipTags.has(el.tagName)) return NodeFilter.FILTER_REJECT;
+          el=el.parentElement;
+        }
+        const weight=parseInt(getComputedStyle(node.parentElement).fontWeight,10)||400;
+        return weight>=700 ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+      }
+    });
+    const nodes=[];
+    while(walker.nextNode()) nodes.push(walker.currentNode);
+    for(const node of nodes){
+      const text=node.nodeValue, frag=document.createDocumentFragment();
+      let last=0, match;
+      runRE.lastIndex=0;
+      while((match=runRE.exec(text))){
+        if(match.index>last) frag.appendChild(document.createTextNode(text.slice(last,match.index)));
+        const span=document.createElement('span');
+        span.className='thai-bold-soft'; span.textContent=match[0]; frag.appendChild(span);
+        last=runRE.lastIndex;
+      }
+      if(last<text.length) frag.appendChild(document.createTextNode(text.slice(last)));
+      if(node.parentNode) node.parentNode.replaceChild(frag,node);
+    }
+  }
+  function run(){soften(document.body)}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',run,{once:true}); else run();
+  const observer=new MutationObserver(records=>{
+    for(const record of records){
+      if(record.type==='childList') record.addedNodes.forEach(n=>{if(n.nodeType===Node.TEXT_NODE) soften(n.parentElement); else if(n.nodeType===Node.ELEMENT_NODE) soften(n)});
+      else if(record.type==='characterData') soften(record.target.parentElement);
+    }
+  });
+  observer.observe(document.documentElement,{subtree:true,childList:true,characterData:true});
+})();
+
+/* Tap origin tracking: popups grow from the point the user actually pressed. */
+(function(){
+  let lastTap={x:innerWidth/2,y:innerHeight/2,time:0};
+  document.addEventListener('pointerdown',e=>{
+    if(e.isPrimary!==false) lastTap={x:e.clientX,y:e.clientY,time:performance.now()};
+  },{capture:true,passive:true});
+  function applyOrigin(overlay){
+    if(!overlay || !overlay.classList.contains('open')) return;
+    const panel=overlay.querySelector('.modal,.picker-panel,.srp-dialog');
+    if(!panel) return;
+    const rect=panel.getBoundingClientRect();
+    const x=Math.max(-rect.width,Math.min(rect.width*2,lastTap.x-rect.left));
+    const y=Math.max(-rect.height,Math.min(rect.height*2,lastTap.y-rect.top));
+    panel.style.setProperty('--srp-origin-x',x+'px');
+    panel.style.setProperty('--srp-origin-y',y+'px');
+  }
+  const mo=new MutationObserver(records=>{
+    for(const r of records){
+      if(r.type!=='attributes'||r.attributeName!=='class')continue;
+      const wasOpen=(r.oldValue||'').split(/\s+/).includes('open');
+      // Apply the tap origin only on the closed -> open transition. Adding `closing`
+      // must not overwrite it with the close button's position.
+      if(!wasOpen&&r.target.classList.contains('open')&&!r.target.classList.contains('closing')) applyOrigin(r.target);
+    }
+  });
+  document.querySelectorAll('.overlay,.picker-overlay,#srpDialogOverlay').forEach(el=>mo.observe(el,{attributes:true,attributeOldValue:true,attributeFilter:['class']}));
+})();
+
+</script>
 </body>
 </html>
+<!-- v1.0.41: GPU-friendly transforms; frame-synced close start; preserve opening tap origin -->
