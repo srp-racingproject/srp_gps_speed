@@ -128,7 +128,22 @@ button:active{transform:scale(.985)}
 .menu-item small{display:block;color:#8da6c0;font-size:12px;font-weight:500;margin-top:5px;white-space:normal}
 .graph-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
 .graph-tools select,.graph-tools button,.secondary-btn{min-height:40px;padding:9px 11px;border-radius:9px;border:1px solid #2a4562;background:#0a1727;color:#e5f2ff;font-size:13px;font-weight:800;max-width:100%}
-.graph-tools select{display:none!important}\n.graph-picker-btn{flex:1 1 160px;min-width:0;min-height:48px;padding:10px 12px;border-radius:12px;border:1px solid #2a5279;background:linear-gradient(145deg,#102944,#071525);color:#eaf5ff;font-size:13px;font-weight:800;text-align:left;white-space:normal;display:flex;align-items:center;justify-content:space-between;gap:8px}\n.graph-picker-btn .picker-label{overflow-wrap:anywhere}\n.graph-picker-btn .picker-chevron{color:#54bdff;font-size:17px;flex:0 0 auto}\n.picker-overlay{position:fixed;inset:0;z-index:100020;background:rgba(0,4,12,.78);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:18px}\n.picker-overlay.open{display:flex}\n.picker-panel{width:min(100%,520px);max-height:min(78dvh,680px);display:flex;flex-direction:column;overflow:hidden;border:1px solid #2b5278;border-radius:20px;background:linear-gradient(155deg,#10243a,#050d19);box-shadow:0 24px 70px #000b}\n.picker-head{padding:16px 18px;border-bottom:1px solid #23405d;display:flex;align-items:center;gap:10px}\n.picker-head strong{font-size:17px;flex:1;color:#f1f7ff}\n.picker-close{width:36px;height:36px;padding:0;border:1px solid #2a4562;border-radius:10px;background:#0a1727;color:#e5f2ff;font-size:22px}\n.picker-options{padding:10px;overflow:auto;display:flex;flex-direction:column;gap:8px}\n.picker-option{width:100%;min-height:52px;text-align:left;white-space:normal;line-height:1.4;padding:12px 14px;border:1px solid #203e5b;border-radius:12px;background:#081727;color:#dcecff;font-size:14px;font-weight:700}\n.picker-option.selected{border-color:#168fff;background:linear-gradient(110deg,#073c70,#0b2b4a);box-shadow:inset 3px 0 #28b7ff}\n.picker-option:active{background:#12395b}\n.reset-choice-actions #saveRunBtn{background:linear-gradient(110deg,#0876df,#168fff);border:1px solid #42b0ff;color:#fff;box-shadow:0 5px 18px #0876df55}\n.reset-choice-actions #saveRunBtn:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.graph-tools select{display:none!important}
+.graph-picker-btn{flex:1 1 160px;min-width:0;min-height:48px;padding:10px 12px;border-radius:12px;border:1px solid #2a5279;background:linear-gradient(145deg,#102944,#071525);color:#eaf5ff;font-size:13px;font-weight:800;text-align:left;white-space:normal;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.graph-picker-btn .picker-label{overflow-wrap:anywhere}
+.graph-picker-btn .picker-chevron{color:#54bdff;font-size:17px;flex:0 0 auto}
+.picker-overlay{position:fixed;inset:0;z-index:100020;background:rgba(0,4,12,.78);backdrop-filter:blur(10px);display:none;align-items:center;justify-content:center;padding:18px}
+.picker-overlay.open{display:flex}
+.picker-panel{width:min(100%,520px);max-height:min(78dvh,680px);display:flex;flex-direction:column;overflow:hidden;border:1px solid #2b5278;border-radius:20px;background:linear-gradient(155deg,#10243a,#050d19);box-shadow:0 24px 70px #000b}
+.picker-head{padding:16px 18px;border-bottom:1px solid #23405d;display:flex;align-items:center;gap:10px}
+.picker-head strong{font-size:17px;flex:1;color:#f1f7ff}
+.picker-close{width:36px;height:36px;padding:0;border:1px solid #2a4562;border-radius:10px;background:#0a1727;color:#e5f2ff;font-size:22px}
+.picker-options{padding:10px;overflow:auto;display:flex;flex-direction:column;gap:8px}
+.picker-option{width:100%;min-height:52px;text-align:left;white-space:normal;line-height:1.4;padding:12px 14px;border:1px solid #203e5b;border-radius:12px;background:#081727;color:#dcecff;font-size:14px;font-weight:700}
+.picker-option.selected{border-color:#168fff;background:linear-gradient(110deg,#073c70,#0b2b4a);box-shadow:inset 3px 0 #28b7ff}
+.picker-option:active{background:#12395b}
+.reset-choice-actions #saveRunBtn{background:linear-gradient(110deg,#0876df,#168fff);border:1px solid #42b0ff;color:#fff;box-shadow:0 5px 18px #0876df55}
+.reset-choice-actions #saveRunBtn:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .graph-tools button.primary{background:linear-gradient(110deg,#0876df,#168fff);border-color:#168fff}
 .graph-card{border:1px solid #203a56;border-radius:12px;background:#06111f;padding:10px;margin-bottom:12px}
 .graph-card h3{font-size:14px;margin:0 0 5px;overflow-wrap:anywhere}
@@ -211,7 +226,7 @@ button:active{transform:scale(.985)}
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.4</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
@@ -599,7 +614,20 @@ button:active{transform:scale(.985)}
  $('resetChoiceOverlay').addEventListener('click',e=>{if(e.target===$('resetChoiceOverlay'))$('resetChoiceOverlay').classList.remove('open');});
  updateClock();setInterval(updateClock,1000);render();refreshGraphUI();
 })();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
+if('serviceWorker' in navigator){
+ window.addEventListener('load',()=>{
+  const reloadKey='srp-sw-reload-pending';
+  if(sessionStorage.getItem(reloadKey)==='1')sessionStorage.removeItem(reloadKey);
+  const hadController=!!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{
+   if(hadController&&sessionStorage.getItem(reloadKey)!=='1'){
+    sessionStorage.setItem(reloadKey,'1');location.reload();
+   }
+  });
+  navigator.serviceWorker.register('./service-worker.js',{updateViaCache:'none'})
+   .then(reg=>reg.update()).catch(()=>{});
+ });
+}
 </script>
 </body>
 </html>
