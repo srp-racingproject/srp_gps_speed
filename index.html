@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050b15">
-<meta name="app-version" content="1.0.12">
+<meta name="app-version" content="1.0.13">
 <meta name="application-name" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-title" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -320,7 +320,7 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.12</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.13</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
@@ -490,14 +490,22 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
   if(running&&lastRawAt){
    const age=Math.max(0,(now-lastRawAt)/1000);
    // Extrapolate only briefly between fixes using measured acceleration; cap prediction to avoid inventing speed.
-   const horizon=Math.min(age,.65);
+   const horizon=Math.min(age,.35);
    predicted=Math.max(0,Math.min(400,targetSpeed+accelKmhPerSec*horizon));
    if(age>STALE_MS/1000){predicted=0;if(now-lastStatusAt>2000){setStatus('รอสัญญาณ GPS…');lastStatusAt=now;}}
   }
-  // Frame-rate independent easing makes the dial feel continuous even when GPS reports once per second.
-  const blend=1-Math.exp(-frameDt/(predicted>displaySpeed?.12:.22));
-  displaySpeed+=(predicted-displaySpeed)*blend;
-  if(Math.abs(displaySpeed)<.06)displaySpeed=0;
+  // Smoothly reconcile each new GPS fix instead of snapping to catch up.
+  // Use a gentler response on acceleration and deceleration, with a hard slew limit
+  // to prevent a sudden jump when a delayed/noisy GPS fix arrives.
+  const rising=predicted>displaySpeed;
+  const tau=rising?.30:.40;
+  const blend=1-Math.exp(-frameDt/tau);
+  let change=(predicted-displaySpeed)*blend;
+  const maxRate=rising?9:12; // km/h per second; display-only, never affects GPS stats
+  const maxChange=maxRate*frameDt;
+  change=Math.max(-maxChange,Math.min(maxChange,change));
+  displaySpeed=Math.max(0,displaySpeed+change);
+  if(displaySpeed<.06)displaySpeed=0;
   $('speed').textContent=displaySpeed.toFixed(1);
   updateDial(displaySpeed);
   $('distance').textContent=(distanceM/1000).toFixed(2);
@@ -535,8 +543,12 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
   if(previousRawAt&&now.t>previousRawAt){
    const rawDt=(now.t-previousRawAt)/1000;
    const measuredAccel=(v-previousRaw)/rawDt;
-   // Smooth the acceleration estimate and bound only the display prediction, not the measured GPS value.
-   if(rawDt>=.15&&rawDt<=3)accelKmhPerSec=Math.max(-18,Math.min(18,accelKmhPerSec*.55+measuredAccel*.45));
+   // Heavily smooth and tightly bound acceleration: phone GPS speed is noisy,
+   // so don't let one fix create an aggressive prediction that later has to snap back.
+   if(rawDt>=.15&&rawDt<=3){
+    const boundedAccel=Math.max(-8,Math.min(8,measuredAccel));
+    accelKmhPerSec=Math.max(-8,Math.min(8,accelKmhPerSec*.78+boundedAccel*.22));
+   }
   }else accelKmhPerSec=0;
   lastRawSpeed=v;lastRawAt=now.t;targetSpeed=v;speedNow=v;
 
