@@ -135,6 +135,16 @@ button:active{transform:scale(.985)}
 .graph-meta{font-size:11px;color:#8da6c0;margin-bottom:8px}
 #speedDistanceChart{width:100%;height:auto;display:block;min-height:220px}
 .chart-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#b7cbe0;margin-top:7px}
+.probe-boxes{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 10px;min-height:42px}
+.probe-box{flex:1 1 190px;min-width:0;padding:8px 10px;border:1px solid #28b7ff;border-radius:10px;background:#06182a;color:#eaf7ff;font-size:12px;line-height:1.5}
+.probe-main{border-color:#28b7ff;box-shadow:inset 3px 0 #28b7ff}
+.probe-compare{border-color:#ffb84d;box-shadow:inset 3px 0 #ffb84d}
+#speedDistanceChart{touch-action:pan-y;cursor:crosshair}
+.reset-choice-modal{max-height:90dvh}
+.reset-choice-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.reset-choice-actions button{min-height:52px;border-radius:13px;font-weight:800}
+.discard-btn{background:#25131a;border:1px solid #79384b;color:#ffc5d0}
+
 .legend-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
 .saved-list{display:flex;flex-direction:column;gap:8px}
 .saved-run{display:flex;align-items:center;gap:8px;border:1px solid #203a56;background:#081525;border-radius:10px;padding:10px}
@@ -222,12 +232,30 @@ button:active{transform:scale(.985)}
       <div id="chartCard" class="graph-card">
         <h3 id="chartTitle">เลือกไฟล์กราฟที่บันทึกไว้</h3>
         <div id="chartMeta" class="graph-meta"></div>
+        <div id="chartProbeBoxes" class="probe-boxes" aria-live="polite">
+          <div id="probeMain" class="probe-box probe-main">กราฟหลัก · แตะกราฟเพื่อดูค่า</div>
+          <div id="probeCompare" class="probe-box probe-compare" hidden>กราฟเปรียบเทียบ</div>
+        </div>
         <svg id="speedDistanceChart" viewBox="0 0 640 360" role="img" aria-label="กราฟความเร็วเทียบระยะทาง"></svg>
         <div id="chartLegend" class="chart-legend"></div>
       </div>
       <h3 style="font-size:15px;margin:16px 0 9px">ไฟล์กราฟที่บันทึกไว้</h3>
       <div id="savedRunsList" class="saved-list"></div>
       <p class="helper">แกนนอน = ระยะทางสะสม (km) · แกนตั้ง = ความเร็ว GPS (km/h) · บันทึกอัตโนมัติเมื่อกดรีเซ็ตหลังการวัด ข้อมูลเก็บไว้ในเบราว์เซอร์ของอุปกรณ์นี้</p>
+    </div>
+  </section>
+</div>
+
+<div id="resetChoiceOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เลือกการจัดการผลการวัด">
+  <section class="modal reset-choice-modal">
+    <header class="modal-head"><h2>จบการวัด</h2><button class="close-btn" id="cancelResetChoice" aria-label="ยกเลิก">×</button></header>
+    <div class="modal-body">
+      <p style="margin:0 0 16px;color:#b7cbe0">ต้องการเก็บผลการวิ่งครั้งนี้ไว้เป็นกราฟหรือไม่?</p>
+      <div class="reset-choice-actions">
+        <button class="primary" id="saveRunBtn">บันทึก</button>
+        <button id="discardRunBtn" class="discard-btn">ลบและรีเซ็ต</button>
+      </div>
+      <p class="helper" style="margin-bottom:0">เลือก “บันทึก” เฉพาะรอบทดสอบที่ต้องการนำไปวิเคราะห์ภายหลัง</p>
     </div>
   </section>
 </div>
@@ -375,14 +403,21 @@ button:active{transform:scale(.985)}
   stopWatch();clearInterval(tick);tick=null;unlockScreen();
   $('start').textContent='▶  เริ่มต่อ';setStatus('หยุดชั่วคราว');render();
  };
+ const hasRunData=()=>graphSamples.length>1||distanceM>0||maxSpeed>0||elapsed()>0;
+ const clearCurrentRun=(statusText)=>{
+  elapsedBefore=0;startedAt=0;distanceM=0;maxSpeed=0;speedNow=0;lastPos=null;lastFixAt=0;prevV=0;graphSamples=[];
+  $('start').textContent='▶  เริ่มวัดความเร็ว';setStatus(statusText||'พร้อมเริ่มวัดความเร็ว');render();
+ };
+ const finishReset=(shouldSave)=>{
+  const saved=shouldSave?saveCurrentRun():null;
+  clearCurrentRun(shouldSave?(saved?'บันทึกกราฟแล้ว · พร้อมเริ่มวัดความเร็ว':'ไม่มีข้อมูลให้บันทึก · พร้อมเริ่มวัดความเร็ว'):'ลบผลรอบนี้แล้ว · พร้อมเริ่มวัดความเร็ว');
+  if(saved){currentGraphId=saved.id;compareGraphId=null;refreshGraphUI();}
+  $('resetChoiceOverlay').classList.remove('open');
+ };
  const reset=()=>{
-  if(distanceM>50&&!confirm('บันทึกผลการทดสอบนี้แล้วรีเซ็ตใช่หรือไม่?'))return;
-  const wasRunning=running;
-  pause();
-  const saved=saveCurrentRun();
-  elapsedBefore=0;distanceM=0;maxSpeed=0;speedNow=0;lastPos=null;lastFixAt=0;prevV=0;graphSamples=[];
-  $('start').textContent='▶  เริ่มวัดความเร็ว';setStatus(saved?'บันทึกกราฟแล้ว · พร้อมเริ่มวัดความเร็ว':'พร้อมเริ่มวัดความเร็ว');render();
-  if(saved){currentGraphId=saved.id;refreshGraphUI();}
+  if(running)pause();
+  if(!hasRunData()){clearCurrentRun('พร้อมเริ่มวัดความเร็ว');return;}
+  $('resetChoiceOverlay').classList.add('open');
  };
 
  // when the app comes back to the front: re-lock screen and restart GPS (browsers may have killed it)
@@ -427,6 +462,9 @@ button:active{transform:scale(.985)}
    $('chartTitle').textContent=main?main.name:'เลือกไฟล์กราฟที่บันทึกไว้';
    $('chartMeta').textContent=main?`${main.dateLabel||stamp(new Date(main.savedAt))} · ระยะทาง ${(main.distanceKm||0).toFixed(2)} km · MAX ${(main.maxSpeed||0).toFixed(1)} km/h${other?'  |  เทียบกับ '+other.name:''}`:'';
    const legend=$('chartLegend');legend.innerHTML='';
+   $('probeMain').textContent='กราฟหลัก · แตะกราฟเพื่อดูค่า';
+   $('probeCompare').hidden=!other;
+   if(other)$('probeCompare').textContent='กราฟเทียบ · แตะกราฟเพื่อดูค่า';
    if(!main){svg.innerHTML='<text x="320" y="170" text-anchor="middle" fill="#8da6c0" font-size="15">ยังไม่มีข้อมูลกราฟ</text>';return;}
    const sets=[{run:main,color:'#28b7ff',label:'กราฟหลัก'}];if(other)sets.push({run:other,color:'#ffb84d',label:'กราฟเปรียบเทียบ'});
    const all=sets.flatMap(s=>(s.run.samples||[]).filter(p=>Number.isFinite(+p.x)&&Number.isFinite(+p.y)));
@@ -458,6 +496,31 @@ button:active{transform:scale(.985)}
      const item=document.createElement('span');item.innerHTML=`<i class="legend-dot" style="background:${s.color}"></i>${s.label}: ${escapeHTML(s.run.name)}`;legend.appendChild(item);
    });
  }
+ function updateProbe(clientX){
+   const svg=$('speedDistanceChart'),main=savedRuns.find(r=>r.id===currentGraphId),other=savedRuns.find(r=>r.id===compareGraphId);
+   if(!main)return;
+   const rect=svg.getBoundingClientRect();if(!rect.width)return;
+   const px=(clientX-rect.left)*(svg.viewBox.baseVal.width/rect.width);
+   const W=640,L=58,R=18,plotW=W-L-R;
+   const sets=[{run:main,color:'#28b7ff',label:'กราฟหลัก',el:$('probeMain')}];
+   if(other)sets.push({run:other,color:'#ffb84d',label:'กราฟเทียบ',el:$('probeCompare')});
+   else $('probeCompare').hidden=true;
+   const all=sets.flatMap(s=>(s.run.samples||[]).filter(p=>Number.isFinite(+p.x)&&Number.isFinite(+p.y)));
+   if(!all.length)return;
+   const maxX=Math.max(0.1,...all.map(p=>+p.x)),xMax=Math.ceil(maxX/0.5)*0.5||0.5;
+   const targetX=Math.max(0,Math.min(1,(px-L)/plotW))*xMax;
+   sets.forEach(s=>{
+     const pts=(s.run.samples||[]).filter(p=>Number.isFinite(+p.x)&&Number.isFinite(+p.y));
+     if(!pts.length){s.el.hidden=true;return;}
+     let nearest=pts[0],best=Infinity;
+     for(const p of pts){const d=Math.abs(+p.x-targetX);if(d<best){best=d;nearest=p;}}
+     s.el.hidden=false;s.el.style.borderColor=s.color;s.el.style.boxShadow=`inset 3px 0 ${s.color}`;
+     s.el.innerHTML=`<strong style="color:${s.color}">${s.label} · ${escapeHTML(s.run.name)}</strong><br>ระยะทาง <b>${(+nearest.x*1000).toFixed(0)} m</b> (${(+nearest.x).toFixed(3)} km) · ความเร็ว <b>${(+nearest.y).toFixed(1)} km/h</b>`;
+   });
+ }
+ const chart=$('speedDistanceChart');
+ chart.addEventListener('pointermove',e=>updateProbe(e.clientX));
+ chart.addEventListener('pointerdown',e=>updateProbe(e.clientX));
  $('menuBtn').addEventListener('click',()=>openOverlay(menuOverlay));
  $('closeMenu').addEventListener('click',()=>closeOverlay(menuOverlay));
  $('openGraph').addEventListener('click',()=>{closeOverlay(menuOverlay);refreshGraphUI();openOverlay(graphOverlay);});
@@ -470,6 +533,10 @@ button:active{transform:scale(.985)}
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeOverlay(menuOverlay);closeOverlay(graphOverlay);}});
  $('start').addEventListener('click',()=>running?pause():start());
  $('reset').addEventListener('click',reset);
+ $('saveRunBtn').addEventListener('click',()=>finishReset(true));
+ $('discardRunBtn').addEventListener('click',()=>finishReset(false));
+ $('cancelResetChoice').addEventListener('click',()=>$('resetChoiceOverlay').classList.remove('open'));
+ $('resetChoiceOverlay').addEventListener('click',e=>{if(e.target===$('resetChoiceOverlay'))$('resetChoiceOverlay').classList.remove('open');});
  updateClock();setInterval(updateClock,1000);render();refreshGraphUI();
 })();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
