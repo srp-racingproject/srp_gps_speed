@@ -142,6 +142,20 @@ button:active{transform:scale(.985)}
 .picker-option{width:100%;min-height:52px;text-align:left;white-space:normal;line-height:1.4;padding:12px 14px;border:1px solid #203e5b;border-radius:12px;background:#081727;color:#dcecff;font-size:14px;font-weight:700}
 .picker-option.selected{border-color:#168fff;background:linear-gradient(110deg,#073c70,#0b2b4a);box-shadow:inset 3px 0 #28b7ff}
 .picker-option:active{background:#12395b}
+
+/* Branded in-app dialogs replace browser-native white alert/confirm boxes */
+#srpDialogOverlay{position:fixed;inset:0;z-index:100100;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,4,12,.78);backdrop-filter:blur(10px)}
+#srpDialogOverlay.open{display:flex}
+.srp-dialog{width:min(100%,430px);border:1px solid #2b5278;border-radius:22px;overflow:hidden;background:radial-gradient(ellipse at 50% 0%,#12365a 0,transparent 58%),linear-gradient(155deg,#0c1c30,#040b15);box-shadow:0 24px 80px #000c;color:#edf6ff;animation:dialogIn .18s ease-out}
+.srp-dialog-mark{width:44px;height:4px;border-radius:5px;background:linear-gradient(90deg,#28b7ff,#168fff);margin:22px 22px 14px}
+.srp-dialog h3{font-size:19px;margin:0 22px 9px;font-weight:900}
+.srp-dialog p{font-size:14px;line-height:1.65;color:#b8cbe0;margin:0 22px 22px;overflow-wrap:anywhere}
+.srp-dialog-actions{display:flex;justify-content:flex-end;gap:10px;padding:14px 18px 18px;border-top:1px solid #1e3852;background:#050d18}
+.srp-dialog-actions button{min-width:86px;min-height:42px;padding:10px 16px;border-radius:12px;border:1px solid #2b4968;background:#0b1b2d;color:#dcecff;font-size:14px;font-weight:800}
+.srp-dialog-actions .dialog-primary{border-color:#168fff;background:linear-gradient(110deg,#0876df,#168fff);color:#fff;box-shadow:0 5px 18px #0876df35}
+.srp-dialog-actions .dialog-danger{border-color:#75354a;background:linear-gradient(110deg,#481321,#2a0b15);color:#ffcad5}
+@keyframes dialogIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.srp-dialog{animation:none}}
 .reset-choice-actions #saveRunBtn{background:linear-gradient(110deg,#0876df,#168fff);border:1px solid #42b0ff;color:#fff;box-shadow:0 5px 18px #0876df55}
 .reset-choice-actions #saveRunBtn:focus-visible{outline:2px solid #fff;outline-offset:2px}
 .graph-tools button.primary{background:linear-gradient(110deg,#0876df,#168fff);border-color:#168fff}
@@ -226,7 +240,7 @@ button:active{transform:scale(.985)}
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.4</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.5</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
@@ -275,6 +289,15 @@ button:active{transform:scale(.985)}
   </section>
 </div>
 
+<div id="srpDialogOverlay" role="dialog" aria-modal="true" aria-labelledby="srpDialogTitle">
+  <section class="srp-dialog">
+    <div class="srp-dialog-mark"></div>
+    <h3 id="srpDialogTitle">แจ้งเตือน</h3>
+    <p id="srpDialogMessage"></p>
+    <div class="srp-dialog-actions" id="srpDialogActions"></div>
+  </section>
+</div>
+
 <div id="resetChoiceOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เลือกการจัดการผลการวัด">
   <section class="modal reset-choice-modal">
     <header class="modal-head"><h2>จบการวัด</h2><button class="close-btn" id="cancelResetChoice" aria-label="ยกเลิก">×</button></header>
@@ -305,7 +328,8 @@ button:active{transform:scale(.985)}
  let savedRuns=loadRuns();
  let currentGraphId=null,compareGraphId=null;
  function loadRuns(){try{const v=JSON.parse(localStorage.getItem(RUNS_KEY)||'[]');return Array.isArray(v)?v:[];}catch(e){return[];}}
- function persistRuns(){try{localStorage.setItem(RUNS_KEY,JSON.stringify(savedRuns));}catch(e){alert('พื้นที่จัดเก็บข้อมูลเต็ม ไม่สามารถบันทึกกราฟได้');}}
+ function appDialog(message,{title='แจ้งเตือน',confirm=false,danger=false}={}){return new Promise(resolve=>{const ov=$('srpDialogOverlay'),actions=$('srpDialogActions');$('srpDialogTitle').textContent=title;$('srpDialogMessage').textContent=message;actions.innerHTML='';const finish=value=>{ov.classList.remove('open');resolve(value);};if(confirm){const cancel=document.createElement('button');cancel.textContent='ยกเลิก';cancel.addEventListener('click',()=>finish(false));actions.appendChild(cancel);}const ok=document.createElement('button');ok.textContent=confirm?(danger?'ลบไฟล์':'ตกลง'):'ตกลง';ok.className='dialog-primary'+(danger?' dialog-danger':'');ok.addEventListener('click',()=>finish(true));actions.appendChild(ok);ov.classList.add('open');ok.focus();});}
+ function persistRuns(){try{localStorage.setItem(RUNS_KEY,JSON.stringify(savedRuns));}catch(e){appDialog('พื้นที่จัดเก็บข้อมูลเต็ม ไม่สามารถบันทึกกราฟได้');}}
  function stamp(d){return d.toLocaleString('th-TH',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});}
  function newRunName(d){
    const day=p2(d.getDate()), month=p2(d.getMonth()+1), year=d.getFullYear()+543;
@@ -502,7 +526,7 @@ button:active{transform:scale(.985)}
      const row=document.createElement('div');row.className='saved-run';
      const b=document.createElement('button');b.innerHTML=`<strong>${escapeHTML(r.name)}</strong><br><span style="color:#8da6c0">${escapeHTML(r.dateLabel||stamp(new Date(r.savedAt)))} · MAX ${Number(r.maxSpeed||0).toFixed(1)} km/h · ${(Number(r.distanceKm)||0).toFixed(2)} km</span>`;
      b.addEventListener('click',()=>{currentGraphId=r.id;compareGraphId=null;refreshGraphUI();drawGraph();});
-     const del=document.createElement('button');del.className='delete-run';del.textContent='×';del.title='ลบไฟล์กราฟ';del.addEventListener('click',()=>{if(confirm('ลบไฟล์กราฟ '+r.name+' ?')){savedRuns=savedRuns.filter(x=>x.id!==r.id);persistRuns();if(currentGraphId===r.id)currentGraphId=null;if(compareGraphId===r.id)compareGraphId=null;refreshGraphUI();drawGraph();}});
+     const del=document.createElement('button');del.className='delete-run';del.textContent='×';del.title='ลบไฟล์กราฟ';del.addEventListener('click',async()=>{if(await appDialog('ต้องการลบไฟล์กราฟ “'+r.name+'” ใช่หรือไม่? การลบนี้ไม่สามารถย้อนกลับได้',{title:'ยืนยันการลบไฟล์กราฟ',confirm:true,danger:true})){savedRuns=savedRuns.filter(x=>x.id!==r.id);persistRuns();if(currentGraphId===r.id)currentGraphId=null;if(compareGraphId===r.id)compareGraphId=null;refreshGraphUI();drawGraph();}});
      row.append(b,del);list.appendChild(row);
    });
    drawGraph();
@@ -603,9 +627,10 @@ button:active{transform:scale(.985)}
  $('closeGraphPicker').addEventListener('click',()=>{$('graphPickerOverlay').classList.remove('open');activePickerSelect=null;});
  $('graphPickerOverlay').addEventListener('click',e=>{if(e.target===$('graphPickerOverlay')){$('graphPickerOverlay').classList.remove('open');activePickerSelect=null;}});
  $('mainRunSelect').addEventListener('change',e=>{currentGraphId=e.target.value||null;if(compareGraphId===currentGraphId)compareGraphId=null;refreshGraphUI();});
- $('compareBtn').addEventListener('click',()=>{const id=$('compareRunSelect').value;if(!id){alert('เลือกไฟล์กราฟที่ต้องการเปรียบเทียบก่อน');return;}if(id===currentGraphId){alert('เลือกไฟล์อื่นที่ไม่ใช่กราฟหลัก');return;}compareGraphId=id;drawGraph();});
+ $('compareRunSelect').addEventListener('change',()=>{const sel=$('compareRunSelect'),chosen=savedRuns.find(r=>r.id===sel.value);const btn=$('compareRunPicker');btn.querySelector('.picker-label').textContent=chosen?runLabel(chosen):'เลือกไฟล์กราฟมาเทียบ';btn.setAttribute('aria-label',chosen?runLabel(chosen):'เลือกไฟล์กราฟมาเทียบ');});
+ $('compareBtn').addEventListener('click',async()=>{const id=$('compareRunSelect').value;if(!id){await appDialog('กรุณาเลือกไฟล์กราฟที่ต้องการเปรียบเทียบก่อน',{title:'ยังไม่ได้เลือกกราฟ'});return;}if(id===currentGraphId){await appDialog('กรุณาเลือกไฟล์กราฟอื่นที่ไม่ใช่กราฟหลัก',{title:'เลือกกราฟคนละไฟล์'});return;}compareGraphId=id;drawGraph();});
  $('clearCompareBtn').addEventListener('click',()=>{compareGraphId=null;refreshGraphUI();});
- document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeOverlay(menuOverlay);closeOverlay(graphOverlay);$('graphPickerOverlay').classList.remove('open');$('resetChoiceOverlay').classList.remove('open');}});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeOverlay(menuOverlay);closeOverlay(graphOverlay);$('graphPickerOverlay').classList.remove('open');$('resetChoiceOverlay').classList.remove('open');if($('srpDialogOverlay').classList.contains('open'))$('srpDialogOverlay').classList.remove('open');}});
  $('start').addEventListener('click',()=>running?pause():start());
  $('reset').addEventListener('click',reset);
  $('saveRunBtn').addEventListener('click',()=>finishReset(true));
