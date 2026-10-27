@@ -240,15 +240,38 @@ button:active{transform:scale(.985)}
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.6</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.7</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
   <section class="modal">
     <header class="modal-head"><h2>เมนู SRP GPS SPEED</h2><button class="close-btn" id="closeMenu" aria-label="ปิด">×</button></header>
     <div class="modal-body">
+      <button class="menu-item" id="openSettings">⚙️ ตั้งค่าแอปและสิทธิ์ GPS<small>ตรวจสอบสถานะตำแหน่ง และดูวิธีเปิดสิทธิ์จากเบราว์เซอร์</small></button>
       <button class="menu-item" id="openGraph">📈 กราฟวิเคราะห์<small>เปิดกราฟความเร็วเทียบระยะทาง และเปรียบเทียบผลการทดสอบ</small></button>
       <p class="helper">ข้อมูลกราฟจะถูกบันทึกในเครื่องนี้โดยอัตโนมัติเมื่อกด “รีเซ็ต” หลังการวัด ข้อมูลไม่ได้ส่งขึ้นเซิร์ฟเวอร์</p>
+    </div>
+  </section>
+</div>
+
+
+<div id="settingsOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="ตั้งค่าแอปและสิทธิ์ GPS">
+  <section class="modal">
+    <header class="modal-head"><button class="close-btn" id="backToMenuFromSettings" aria-label="กลับ">‹</button><h2>ตั้งค่าแอป</h2><button class="close-btn" id="closeSettings" aria-label="ปิด">×</button></header>
+    <div class="modal-body">
+      <div class="menu-item" style="cursor:default">
+        📍 สิทธิ์เข้าถึงตำแหน่ง GPS
+        <small id="gpsPermissionStatus" aria-live="polite">กำลังตรวจสอบสถานะสิทธิ์…</small>
+      </div>
+      <button class="menu-item" id="requestGpsPermission">📡 ตรวจสอบ / ขอสิทธิ์ GPS<small>กดเพื่อเรียกหน้าต่างขออนุญาต หากเบราว์เซอร์อนุญาตให้ขอใหม่ได้</small></button>
+      <div class="helper" style="line-height:1.8">
+        <strong style="color:#eaf5ff">หากสถานะเป็น “ถูกปฏิเสธ” ให้เปิดสิทธิ์ดังนี้</strong><br>
+        1. กดไอคอนรูปกุญแจ/ตั้งค่าเว็บไซต์ข้างแถบที่อยู่ของเบราว์เซอร์ หรือเปิดเมนู ⋮ ของเบราว์เซอร์<br>
+        2. เข้า <strong>การตั้งค่าเว็บไซต์ (Site settings)</strong> → <strong>ตำแหน่ง (Location)</strong><br>
+        3. เปลี่ยนเป็น <strong>อนุญาต (Allow)</strong> สำหรับเว็บไซต์นี้<br>
+        4. ตรวจสอบว่า Location ของโทรศัพท์เปิดอยู่ แล้วกลับมาที่แอปและกดเริ่มวัดความเร็ว
+        <br><br>หมายเหตุ: เว็บแอปไม่สามารถเปลี่ยนสิทธิ์ของเบราว์เซอร์แทนผู้ใช้ได้โดยตรง หากเคยบล็อกไว้ ต้องเปิด Allow ในการตั้งค่าเว็บไซต์ก่อน
+      </div>
     </div>
   </section>
 </div>
@@ -441,7 +464,7 @@ button:active{transform:scale(.985)}
  function stopWatch(){if(watching!==null&&navigator.geolocation){navigator.geolocation.clearWatch(watching);watching=null;}}
 
  let starting=false;
- const permissionHelp=()=>appDialog('ยังไม่ได้อนุญาตให้เข้าถึงตำแหน่ง GPS กรุณากดอนุญาตเมื่อมีหน้าต่างขอสิทธิ์ หากเคยกดปฏิเสธแล้ว ให้เปิดการตั้งค่าเว็บไซต์/แอปของเบราว์เซอร์ แล้วเปลี่ยน Location เป็น Allow จากนั้นกลับมากดเริ่มวัดความเร็วอีกครั้ง',{title:'ต้องอนุญาตตำแหน่ง GPS'});
+ const permissionHelp=()=>appDialog('ยังไม่ได้รับสิทธิ์ตำแหน่ง GPS ให้กดตกลง แล้วเปิดเมนู 3 ขีด → ตั้งค่าแอปและสิทธิ์ GPS เพื่อดูสถานะและวิธีเปิด Location เป็น Allow หากเบราว์เซอร์บล็อกสิทธิ์ไว้ แอปจะเปิดหน้าตั้งค่านั้นแทนคุณไม่ได้ ต้องเปลี่ยนสิทธิ์ในเมนูของเบราว์เซอร์ แล้วกลับมากดเริ่มวัดอีกครั้ง',{title:'ต้องอนุญาตตำแหน่ง GPS'});
  const beginTracking=()=>{
   if(running)return;
   running=true;startedAt=Date.now();lastFixAt=Date.now();speedNow=0;
@@ -517,7 +540,7 @@ button:active{transform:scale(.985)}
  });
 
  // ---- graph analysis UI ----
- const menuOverlay=$('menuOverlay'),graphOverlay=$('graphOverlay');
+ const menuOverlay=$('menuOverlay'),graphOverlay=$('graphOverlay'),settingsOverlay=$('settingsOverlay');
  function openOverlay(el){el.classList.add('open');}
  function closeOverlay(el){el.classList.remove('open');}
  function fmtDuration(sec){sec=Math.max(0,Math.floor(sec||0));return p2(Math.floor(sec/60))+':'+p2(sec%60);}
@@ -654,9 +677,14 @@ button:active{transform:scale(.985)}
  $('menuBtn').addEventListener('click',()=>openOverlay(menuOverlay));
  $('closeMenu').addEventListener('click',()=>closeOverlay(menuOverlay));
  $('openGraph').addEventListener('click',()=>{closeOverlay(menuOverlay);refreshGraphUI();openOverlay(graphOverlay);});
+ $('openSettings').addEventListener('click',()=>{refreshGpsPermissionStatus();closeOverlay(menuOverlay);openOverlay(settingsOverlay);});
+ $('closeSettings').addEventListener('click',()=>closeOverlay(settingsOverlay));
+ $('backToMenuFromSettings').addEventListener('click',()=>{closeOverlay(settingsOverlay);openOverlay(menuOverlay);});
+ async function refreshGpsPermissionStatus(){const el=$('gpsPermissionStatus');let state='unknown';try{if(navigator.permissions&&navigator.permissions.query){const p=await navigator.permissions.query({name:'geolocation'});state=p.state;}}catch(_){}el.textContent=state==='granted'?'อนุญาตแล้ว — พร้อมใช้งาน GPS':state==='denied'?'ถูกปฏิเสธ — เปิด Site settings → Location → Allow':state==='prompt'?'ยังรอการอนุญาต — กดปุ่มด้านล่างเพื่อขอสิทธิ์':'ตรวจสอบไม่ได้ในเบราว์เซอร์นี้ — กดปุ่มด้านล่างเพื่อทดสอบ';}
+ $('requestGpsPermission').addEventListener('click',()=>{if(!navigator.geolocation){appDialog('เบราว์เซอร์นี้ไม่รองรับ GPS',{title:'ไม่รองรับ GPS'});return;}navigator.geolocation.getCurrentPosition(async()=>{await refreshGpsPermissionStatus();await appDialog('ได้รับสิทธิ์ตำแหน่งแล้ว คุณสามารถกลับไปกดเริ่มวัดความเร็วได้',{title:'อนุญาต GPS แล้ว'});},async err=>{await refreshGpsPermissionStatus();if(err.code===1){await appDialog('เบราว์เซอร์ปฏิเสธสิทธิ์หรือเคยบล็อกไว้ ให้ทำตามขั้นตอนในหน้านี้: Site settings → Location → Allow แล้วกลับมากดตรวจสอบอีกครั้ง',{title:'ต้องเปิดสิทธิ์ในเบราว์เซอร์'});}else{await appDialog('ยังหาตำแหน่งไม่ได้ ตรวจสอบว่าเปิด Location ของโทรศัพท์ และอนุญาตตำแหน่งให้เบราว์เซอร์แล้ว',{title:'ยังหาตำแหน่งไม่ได้'});}},{enableHighAccuracy:true,maximumAge:0,timeout:10000});});
  $('closeGraph').addEventListener('click',()=>closeOverlay(graphOverlay));
  $('backToMenu').addEventListener('click',()=>{closeOverlay(graphOverlay);openOverlay(menuOverlay);});
- [menuOverlay,graphOverlay].forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOverlay(o);}));
+ [menuOverlay,graphOverlay,settingsOverlay].forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOverlay(o);}));
  $('mainRunPicker').addEventListener('click',()=>openGraphPicker('mainRunSelect','เลือกกราฟหลัก'));
  $('compareRunPicker').addEventListener('click',()=>openGraphPicker('compareRunSelect','เลือกไฟล์กราฟมาเทียบ'));
  $('closeGraphPicker').addEventListener('click',()=>{$('graphPickerOverlay').classList.remove('open');activePickerSelect=null;});
@@ -665,7 +693,7 @@ button:active{transform:scale(.985)}
  $('compareRunSelect').addEventListener('change',()=>{const sel=$('compareRunSelect'),chosen=savedRuns.find(r=>r.id===sel.value);const btn=$('compareRunPicker');btn.querySelector('.picker-label').textContent=chosen?runLabel(chosen):'เลือกไฟล์กราฟมาเทียบ';btn.setAttribute('aria-label',chosen?runLabel(chosen):'เลือกไฟล์กราฟมาเทียบ');});
  $('compareBtn').addEventListener('click',async()=>{const id=$('compareRunSelect').value;if(!id){await appDialog('กรุณาเลือกไฟล์กราฟที่ต้องการเปรียบเทียบก่อน',{title:'ยังไม่ได้เลือกกราฟ'});return;}if(id===currentGraphId){await appDialog('กรุณาเลือกไฟล์กราฟอื่นที่ไม่ใช่กราฟหลัก',{title:'เลือกกราฟคนละไฟล์'});return;}compareGraphId=id;drawGraph();});
  $('clearCompareBtn').addEventListener('click',()=>{compareGraphId=null;refreshGraphUI();});
- document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeOverlay(menuOverlay);closeOverlay(graphOverlay);$('graphPickerOverlay').classList.remove('open');$('resetChoiceOverlay').classList.remove('open');if($('srpDialogOverlay').classList.contains('open'))$('srpDialogOverlay').classList.remove('open');}});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeOverlay(menuOverlay);closeOverlay(graphOverlay);closeOverlay(settingsOverlay);$('graphPickerOverlay').classList.remove('open');$('resetChoiceOverlay').classList.remove('open');if($('srpDialogOverlay').classList.contains('open'))$('srpDialogOverlay').classList.remove('open');}});
  $('start').addEventListener('click',()=>running?pause():start());
  $('reset').addEventListener('click',reset);
  $('saveRunBtn').addEventListener('click',()=>finishReset(true));
