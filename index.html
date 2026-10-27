@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050b15">
-<meta name="app-version" content="1.0.11">
+<meta name="app-version" content="1.0.12">
 <meta name="application-name" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-title" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -320,7 +320,7 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.11</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.12</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
@@ -448,10 +448,12 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
    savedRuns.unshift(run);savedRuns=savedRuns.slice(0,100);persistRuns();return run;
  }
  // ---- tuning ----
- const MAX_ACC=40;      // ignore fixes less accurate than 40 m
- const MIN_KMH=2;       // below this = standing still (GPS drift)
- const STALE_MS=5000;   // no fix for 5 s -> show 0 and warn
+ const MAX_ACC=40;      // reject very poor GPS fixes
+ const MIN_KMH=1.5;     // low speed is treated as stationary to suppress drift
+ const STALE_MS=4500;   // after this, predicted speed eases down to zero
  let watching=null,running=false,startedAt=0,elapsedBefore=0,lastPos=null,distanceM=0,maxSpeed=0,speedNow=0,lastFixAt=0,tick=null,wake=null,prevV=0;
+ // UI-only speed prediction: calculations, distance, MAX and graph use confirmed GPS fixes only.
+ let targetSpeed=0,displaySpeed=0,lastRawSpeed=0,lastRawAt=0,accelKmhPerSec=0,lastRenderAt=0,renderFrame=null;
  const p2=n=>String(n).padStart(2,'0');
  const fmtTime=s=>{s=Math.max(0,Math.floor(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),sec=s%60;return h?`${p2(h)}:${p2(m)}:${p2(sec)}`:`${p2(m)}:${p2(sec)}`};
  const updateClock=()=>{const d=new Date();$('time').textContent=d.toLocaleTimeString('th-TH',{hour12:false});$('date').textContent=d.toLocaleDateString('th-TH',{day:'2-digit',month:'short',year:'numeric'});};
@@ -483,15 +485,29 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
   
   const elapsed=()=>elapsedBefore+(running?(Date.now()-startedAt)/1000:0);
  const render=()=>{
-  if(running&&lastFixAt&&Date.now()-lastFixAt>STALE_MS){speedNow=0;setStatus('รอสัญญาณ GPS…');}
-  $('speed').textContent=speedNow.toFixed(1);
-   updateDial(speedNow);
+  const now=Date.now(), frameDt=lastRenderAt?Math.min(.1,(now-lastRenderAt)/1000):.033;lastRenderAt=now;
+  let predicted=targetSpeed;
+  if(running&&lastRawAt){
+   const age=Math.max(0,(now-lastRawAt)/1000);
+   // Extrapolate only briefly between fixes using measured acceleration; cap prediction to avoid inventing speed.
+   const horizon=Math.min(age,.65);
+   predicted=Math.max(0,Math.min(400,targetSpeed+accelKmhPerSec*horizon));
+   if(age>STALE_MS/1000){predicted=0;if(now-lastStatusAt>2000){setStatus('รอสัญญาณ GPS…');lastStatusAt=now;}}
+  }
+  // Frame-rate independent easing makes the dial feel continuous even when GPS reports once per second.
+  const blend=1-Math.exp(-frameDt/(predicted>displaySpeed?.12:.22));
+  displaySpeed+=(predicted-displaySpeed)*blend;
+  if(Math.abs(displaySpeed)<.06)displaySpeed=0;
+  $('speed').textContent=displaySpeed.toFixed(1);
+  updateDial(displaySpeed);
   $('distance').textContent=(distanceM/1000).toFixed(2);
   $('max').textContent=maxSpeed.toFixed(1);
   const e=elapsed();
   $('avg').textContent=(e>0?(distanceM/1000)/(e/3600):0).toFixed(1);
   $('elapsed').textContent=fmtTime(e);
  };
+ let lastStatusAt=0;
+ const animateRender=()=>{render();if(running)renderFrame=requestAnimationFrame(animateRender);else renderFrame=null;};
  function haversine(a,b){const R=6371000,rad=x=>x*Math.PI/180,dLat=rad(b.lat-a.lat),dLon=rad(b.lon-a.lon),x=Math.sin(dLat/2)**2+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.sin(dLon/2)**2;return 2*R*Math.asin(Math.sqrt(x));}
 
  // ---- keep screen on while measuring ----
@@ -501,34 +517,48 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
  // ---- GPS fix handler ----
  function onFix(pos){
   if(!running)return;
-  const c=pos.coords,acc=c.accuracy||999;
-  const now={lat:c.latitude,lon:c.longitude,t:pos.timestamp};
+  const c=pos.coords,acc=Number.isFinite(c.accuracy)?c.accuracy:999;
+  const now={lat:c.latitude,lon:c.longitude,t:pos.timestamp||Date.now()};
   lastFixAt=Date.now();
-  if(acc>MAX_ACC){setStatus('สัญญาณ GPS ยังไม่นิ่ง · ±'+Math.round(acc)+' m');return;}   // do NOT move lastPos on a bad fix
+  if(acc>MAX_ACC){setStatus('สัญญาณ GPS ยังไม่นิ่ง · ±'+Math.round(acc)+' m');return;}
 
-  // speed (km/h): device Doppler speed first, else from distance/time
-  let v=null,step=0;
-  if(lastPos){step=haversine(lastPos,now);}
+  let step=0,dt=0;
+  if(lastPos){step=haversine(lastPos,now);dt=(now.t-lastPos.t)/1000;}
+  let v=null;
   if(c.speed!=null&&Number.isFinite(c.speed)&&c.speed>=0){v=c.speed*3.6;}
-  else if(lastPos){const dt=(now.t-lastPos.t)/1000;if(dt>0&&step>=Math.max(3,acc*0.5))v=step/dt*3.6;else v=0;}
-  if(v==null)v=0;
-  if(v>400)return;                                   // impossible jump
-  if(lastPos&&(now.t-lastPos.t)>0&&step/((now.t-lastPos.t)/1000)*3.6>350)return; // position teleport
+  else if(lastPos&&dt>0){v=step/dt*3.6;}
+  if(v==null||!Number.isFinite(v)||v>400)return;
+  // Reject obvious location teleports, but don't reject genuine rapid acceleration just because speed changed.
+  if(lastPos&&dt>0&&step/dt*3.6>350)return;
 
-  if(v<MIN_KMH){                                     // standing still: no speed, no distance
-   speedNow=0;prevV=0;lastPos=now;
-  }else{
-   speedNow=speedNow>0?speedNow*0.3+v*0.7:v;         // light smoothing
-   // add distance only for real movement, bigger than the GPS noise
-   if(lastPos){const minStep=Math.max(2,acc*0.3);if(step>=minStep&&step<250){distanceM+=step;lastPos=now;}}
-   else lastPos=now;
-   const cand=Math.min(speedNow,prevV);if(acc<=30&&cand>maxSpeed)maxSpeed=cand;prevV=speedNow;
+  const previousRaw=lastRawSpeed,previousRawAt=lastRawAt;
+  if(previousRawAt&&now.t>previousRawAt){
+   const rawDt=(now.t-previousRawAt)/1000;
+   const measuredAccel=(v-previousRaw)/rawDt;
+   // Smooth the acceleration estimate and bound only the display prediction, not the measured GPS value.
+   if(rawDt>=.15&&rawDt<=3)accelKmhPerSec=Math.max(-18,Math.min(18,accelKmhPerSec*.55+measuredAccel*.45));
+  }else accelKmhPerSec=0;
+  lastRawSpeed=v;lastRawAt=now.t;targetSpeed=v;speedNow=v;
+
+  // Distance uses consecutive accepted fixes. Always advance the reference point so small steps
+  // aren't accidentally accumulated across several seconds into one misleading jump.
+  if(lastPos&&dt>0&&dt<=5&&step<Math.min(250,350/3.6*dt+8)){
+   const minStep=Math.max(.8,Math.min(3,acc*.12));
+   if(v>=MIN_KMH&&step>=minStep)distanceM+=step;
   }
-  setStatus('GPS เชื่อมต่อแล้ว · ±'+Math.round(acc)+' m',true);
+  lastPos=now;
+  if(v<MIN_KMH){targetSpeed=0;speedNow=0;accelKmhPerSec=Math.min(0,accelKmhPerSec);}
+
+  // MAX uses a validated GPS fix rather than the smoothed display value, avoiding systematic under-reading.
+  if(acc<=25){
+   const plausible=!previousRawAt||now.t<=previousRawAt||((now.t-previousRawAt)/1000>0&&Math.abs(v-previousRaw)<=Math.max(35,18*((now.t-previousRawAt)/1000)));
+   if(plausible&&v>maxSpeed)maxSpeed=v;
+  }
+  setStatus('GPS เชื่อมต่อแล้ว · ±'+Math.round(acc)+' m',true);lastStatusAt=Date.now();
   if(running){
-    const point={x:+(distanceM/1000).toFixed(4),y:+speedNow.toFixed(1),t:now.t};
-    const prev=graphSamples[graphSamples.length-1];
-    if(!prev || point.x>prev.x+0.0001 || Math.abs(point.y-prev.y)>=0.5 || now.t-prev.t>=1500)graphSamples.push(point);
+   const point={x:+(distanceM/1000).toFixed(4),y:+v.toFixed(1),t:now.t};
+   const prev=graphSamples[graphSamples.length-1];
+   if(!prev||point.x>prev.x+0.0001||Math.abs(point.y-prev.y)>=0.5||now.t-prev.t>=1500)graphSamples.push(point);
   }
   render();
  }
@@ -552,7 +582,7 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
   $('start').textContent='Ⅱ  หยุดชั่วคราว';
   setStatus('กำลังค้นหาสัญญาณ GPS…',true);
   lockScreen();startWatch();
-  tick=setInterval(render,500);
+  if(renderFrame)cancelAnimationFrame(renderFrame);lastRenderAt=0;renderFrame=requestAnimationFrame(animateRender);
  };
  const start=async()=>{
   if(running||starting)return;
@@ -592,13 +622,13 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
  const pause=()=>{
   if(!running)return;
   elapsedBefore+=(Date.now()-startedAt)/1000;
-  running=false;speedNow=0;lastPos=null;
-  stopWatch();clearInterval(tick);tick=null;unlockScreen();
+  running=false;speedNow=0;targetSpeed=0;displaySpeed=0;lastPos=null;lastRawAt=0;accelKmhPerSec=0;
+  stopWatch();clearInterval(tick);tick=null;if(renderFrame)cancelAnimationFrame(renderFrame);renderFrame=null;unlockScreen();
   $('start').textContent='▶  เริ่มต่อ';setStatus('หยุดชั่วคราว');render();
  };
  const hasRunData=()=>graphSamples.length>1||distanceM>0||maxSpeed>0||elapsed()>0;
  const clearCurrentRun=(statusText)=>{
-  elapsedBefore=0;startedAt=0;distanceM=0;maxSpeed=0;speedNow=0;lastPos=null;lastFixAt=0;prevV=0;graphSamples=[];
+  elapsedBefore=0;startedAt=0;distanceM=0;maxSpeed=0;speedNow=0;targetSpeed=0;displaySpeed=0;lastPos=null;lastFixAt=0;prevV=0;lastRawSpeed=0;lastRawAt=0;accelKmhPerSec=0;graphSamples=[];
   $('start').textContent='▶  เริ่มวัดความเร็ว';setStatus(statusText||'พร้อมเริ่มวัดความเร็ว');render();
  };
  const finishReset=(shouldSave)=>{
