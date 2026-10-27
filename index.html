@@ -146,10 +146,19 @@ button:active{transform:scale(.985)}
 .picker-option.selected{border-color:#168fff;background:linear-gradient(110deg,#073c70,#0b2b4a);box-shadow:inset 3px 0 #28b7ff}
 .picker-option:active{background:#12395b}
 
-/* SRP GPS SPEED v1.0.16 — compact menu and paired graph controls */
+/* SRP GPS SPEED v1.0.18 — compact menu and paired graph controls */
 .menu-item{padding:13px 15px;margin-bottom:8px;font-size:16px;min-height:0}
 .menu-item small{display:none}
 #menuOverlay .modal-head h2{letter-spacing:.08em;font-weight:900}
+/* v1.0.18 — compact menu sized to its content, with premium SRP design credit */
+#menuOverlay{align-items:center;padding-top:max(12px,env(safe-area-inset-top));padding-bottom:max(12px,env(safe-area-inset-bottom))}
+#menuOverlay .modal{height:auto;max-height:calc(100dvh - max(24px,env(safe-area-inset-top) + env(safe-area-inset-bottom)));min-height:0;flex:0 1 auto;border-radius:22px;background:radial-gradient(ellipse at 88% 0%,rgba(17,94,151,.17),transparent 48%),linear-gradient(145deg,#0a192b 0%,#040b15 75%,#03070d 100%);box-shadow:0 22px 70px #000b,0 0 26px rgba(22,126,203,.06)}
+#menuOverlay .modal-head{padding:16px 18px}
+#menuOverlay .menu-modal-body{flex:0 1 auto;overflow:visible;padding:14px 14px 16px}
+#menuOverlay .menu-item{padding:13px 15px;margin-bottom:8px;min-height:0;border-radius:13px;background:linear-gradient(110deg,rgba(8,24,41,.98),rgba(5,14,25,.98));box-shadow:inset 0 1px rgba(160,207,255,.025)}
+#menuOverlay .menu-item:last-of-type{margin-bottom:0}
+#menuOverlay .menu-credit{margin-top:17px;padding:13px 4px 2px;text-align:center;border-top:1px solid rgba(65,113,155,.28);font-size:clamp(12px,3.3vw,14px);font-weight:900;letter-spacing:.19em;background:linear-gradient(100deg,#7895b4 0%,#e7f4ff 28%,#50c8ff 56%,#a7c9e9 78%,#6386a9 100%);-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 18px rgba(35,145,220,.15);filter:drop-shadow(0 2px 5px rgba(0,0,0,.65))}
+@media(max-height:430px){#menuOverlay .modal{max-height:calc(100dvh - 24px);overflow:auto}#menuOverlay .menu-modal-body{padding:10px}#menuOverlay .menu-credit{margin-top:10px;padding-top:9px}}
 .graph-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:stretch}
 .graph-tools .graph-picker-btn{width:100%;min-width:0;min-height:44px;box-sizing:border-box;padding:9px 11px;font-size:13px}
 .graph-tools #compareBtn,.graph-tools #clearCompareBtn{width:100%;min-width:0;min-height:42px;box-sizing:border-box;padding:9px 12px;border-radius:10px;font-size:14px;font-weight:850}
@@ -282,7 +291,7 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
   .overlay.open .modal, .picker-overlay.open .picker-panel, #srpDialogOverlay.open .srp-dialog { animation: none !important; }
 }
 
-/* SRP GPS SPEED — Velocity Lab inspired premium dark finish v1.0.16
+/* SRP GPS SPEED — Velocity Lab inspired premium dark finish v1.0.18
    Visual-only skin: keep layout, labels, controls and GPS behavior unchanged. */
 :root{
   --bg:#03070d;--panel:#060d17;--line:#1b3550;
@@ -428,15 +437,16 @@ body:before{
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.16</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.18</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
   <section class="modal">
     <header class="modal-head"><h2>MENU</h2><button class="close-btn" id="closeMenu" aria-label="ปิด">×</button></header>
-    <div class="modal-body">
-      <button class="menu-item" id="openSettings">การเข้าถึงตำแหน่ง GPS</button>
-      <button class="menu-item" id="openGraph">กราฟวิเคราะห์</button>
+    <div class="modal-body menu-modal-body">
+      <button class="menu-item" id="openSettings">⚙️ &nbsp; การเข้าถึงตำแหน่ง GPS</button>
+      <button class="menu-item" id="openGraph">📈 &nbsp; กราฟวิเคราะห์</button>
+      <div class="menu-credit">SRP RACING DESIGN</div>
     </div>
   </section>
 </div>
