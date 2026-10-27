@@ -509,6 +509,25 @@ button:active{transform:scale(.985)}
    if(!all.length)return;
    const maxX=Math.max(0.1,...all.map(p=>+p.x)),xMax=Math.ceil(maxX/0.5)*0.5||0.5;
    const targetX=Math.max(0,Math.min(1,(px-L)/plotW))*xMax;
+   // White vertical crosshair marks the exact horizontal position being inspected.
+   const plotTop=18, plotBottom=360-48;
+   let probeLine=svg.querySelector('#probeLine');
+   if(!probeLine){
+     probeLine=document.createElementNS('http://www.w3.org/2000/svg','line');
+     probeLine.setAttribute('id','probeLine');
+     probeLine.setAttribute('stroke','#ffffff');
+     probeLine.setAttribute('stroke-width','1.8');
+     probeLine.setAttribute('stroke-opacity','0.95');
+     probeLine.setAttribute('stroke-dasharray','5 4');
+     probeLine.setAttribute('pointer-events','none');
+     svg.appendChild(probeLine);
+   }
+   const probeX=L+(targetX/xMax)*plotW;
+   probeLine.setAttribute('x1',probeX);
+   probeLine.setAttribute('x2',probeX);
+   probeLine.setAttribute('y1',plotTop);
+   probeLine.setAttribute('y2',plotBottom);
+   probeLine.style.display=(px<L||px>W-R)?'none':'';
    sets.forEach(s=>{
      const pts=(s.run.samples||[]).filter(p=>Number.isFinite(+p.x)&&Number.isFinite(+p.y));
      if(!pts.length){s.el.hidden=true;return;}
