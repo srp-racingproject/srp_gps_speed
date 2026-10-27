@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050b15">
+<meta name="app-version" content="1.0.8">
 <meta name="application-name" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-title" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -142,6 +143,35 @@ button:active{transform:scale(.985)}
 .picker-option{width:100%;min-height:52px;text-align:left;white-space:normal;line-height:1.4;padding:12px 14px;border:1px solid #203e5b;border-radius:12px;background:#081727;color:#dcecff;font-size:14px;font-weight:700}
 .picker-option.selected{border-color:#168fff;background:linear-gradient(110deg,#073c70,#0b2b4a);box-shadow:inset 3px 0 #28b7ff}
 .picker-option:active{background:#12395b}
+
+/* SRP Motion System v1.0.8 — soft, purposeful transitions across the app */
+:root{--motion-out:cubic-bezier(.22,1,.36,1);--motion-spring:cubic-bezier(.2,1.35,.35,1);--motion-fast:180ms;--motion-ui:360ms}
+@keyframes srpBackdropIn{from{opacity:0}to{opacity:1}}
+@keyframes srpPanelFromSide{0%{opacity:0;transform:translate3d(34px,0,0) scale(.985)}72%{opacity:1;transform:translate3d(-2px,0,0) scale(1.002)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes srpPickerRise{0%{opacity:0;transform:translate3d(0,24px,0) scale(.97)}72%{opacity:1;transform:translate3d(0,-2px,0) scale(1.006)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes srpDialogPop{0%{opacity:0;transform:translate3d(0,14px,0) scale(.92)}68%{opacity:1;transform:translate3d(0,-2px,0) scale(1.012)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@keyframes srpSoftFade{from{opacity:0}to{opacity:1}}
+.overlay.open{animation:srpBackdropIn 220ms ease-out both}
+.overlay.open .modal{animation:srpPanelFromSide 440ms var(--motion-spring) both;transform-origin:center right;will-change:transform,opacity}
+.picker-overlay.open{animation:srpBackdropIn 220ms ease-out both}
+.picker-overlay.open .picker-panel{animation:srpPickerRise 400ms var(--motion-spring) both;will-change:transform,opacity}
+#srpDialogOverlay.open{animation:srpBackdropIn 200ms ease-out both}
+#srpDialogOverlay.open .srp-dialog{animation:srpDialogPop 420ms var(--motion-spring) both;will-change:transform,opacity}
+/* Tap feedback: tactile but restrained */
+button,.graph-card,.saved-run{transition:transform 220ms var(--motion-out),border-color 220ms ease,background-color 220ms ease,box-shadow 220ms ease,filter 220ms ease}
+button:not(:disabled){-webkit-tap-highlight-color:transparent}
+button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
+.menu-btn span{transition:transform 260ms var(--motion-out),opacity 180ms ease}
+.menu-item:active,.picker-option:active,.graph-picker-btn:active{transform:scale(.988)}
+.menu-item:hover,.picker-option:hover,.graph-picker-btn:hover{border-color:#3d80b5;box-shadow:0 6px 22px #007dff16}
+.close-btn:hover,.picker-close:hover{border-color:#4c8bc0;background:#102842}
+.graph-card,.saved-run{animation:srpSoftFade 300ms ease both}
+/* Keep motion comfortable for people who request reduced motion */
+@media(prefers-reduced-motion:reduce){
+ .overlay.open,.overlay.open .modal,.picker-overlay.open,.picker-overlay.open .picker-panel,#srpDialogOverlay.open,#srpDialogOverlay.open .srp-dialog,.graph-card,.saved-run{animation:none!important;will-change:auto}
+ button,.graph-card,.saved-run,.menu-btn span{transition:none!important}
+ button:not(:disabled):active{transform:none}
+}
 
 /* Branded in-app dialogs replace browser-native white alert/confirm boxes */
 #srpDialogOverlay{position:fixed;inset:0;z-index:100100;display:none;align-items:center;justify-content:center;padding:22px;background:rgba(0,4,12,.78);backdrop-filter:blur(10px)}
