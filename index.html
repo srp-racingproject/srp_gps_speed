@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050b15">
-<meta name="app-version" content="1.0.13">
+<meta name="app-version" content="1.0.14">
 <meta name="application-name" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-title" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -268,6 +268,101 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
 @media (prefers-reduced-motion: reduce) {
   .overlay.open .modal, .picker-overlay.open .picker-panel, #srpDialogOverlay.open .srp-dialog { animation: none !important; }
 }
+
+/* SRP GPS SPEED — Velocity Lab inspired premium dark finish v1.0.14
+   Visual-only skin: keep layout, labels, controls and GPS behavior unchanged. */
+:root{
+  --bg:#03070d;--panel:#060d17;--line:#1b3550;
+  --blue:#168cff;--cyan:#48cfff;--muted:#8198b1;--white:#f2f6ff;
+}
+html,body{background-color:#03070d!important}
+body{
+  background-image:
+    radial-gradient(ellipse at 88% 13%,rgba(0,100,190,.30) 0%,rgba(0,52,104,.16) 22%,transparent 49%),
+    radial-gradient(ellipse at 8% 72%,rgba(0,54,102,.12) 0%,transparent 43%),
+    linear-gradient(135deg,#050a12 0%,#02060c 58%,#040b15 100%)!important;
+  background-attachment:fixed;
+}
+body:before{
+  opacity:.075;
+  background-image:
+    linear-gradient(45deg,rgba(37,65,91,.9) 25%,transparent 25%,transparent 75%,rgba(37,65,91,.9) 75%),
+    linear-gradient(45deg,rgba(37,65,91,.9) 25%,transparent 25%,transparent 75%,rgba(37,65,91,.9) 75%),
+    linear-gradient(120deg,transparent 0%,rgba(20,87,143,.12) 50%,transparent 78%);
+  background-position:0 0,12px 12px,0 0;
+  background-size:24px 24px,24px 24px,100% 100%;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.95),rgba(0,0,0,.48) 62%,transparent 100%);
+}
+.header{border-bottom-color:rgba(49,101,148,.28);text-shadow:0 2px 18px rgba(0,0,0,.5)}
+.brand .srp{text-shadow:0 1px 0 #8ca6c0,0 0 16px rgba(22,140,255,.19),0 3px 12px rgba(0,0,0,.7)}
+.brand .gps{background-image:linear-gradient(100deg,#4bdcff 0%,#168bff 62%,#d8efff 100%)}
+.panel{
+  border-color:rgba(43,78,111,.78);
+  background:
+    radial-gradient(ellipse at 50% 36%,rgba(10,34,58,.26) 0%,transparent 55%),
+    linear-gradient(150deg,rgba(7,17,30,.985) 0%,rgba(3,9,17,.99) 70%,rgba(4,12,22,.99) 100%);
+  box-shadow:
+    0 22px 58px rgba(0,0,0,.58),
+    0 0 0 1px rgba(37,83,126,.08),
+    inset 0 1px 0 rgba(130,190,235,.035);
+}
+.panel:before{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;
+  background:
+    radial-gradient(ellipse at 92% 0%,rgba(0,115,215,.11),transparent 38%),
+    linear-gradient(115deg,transparent 22%,rgba(35,104,164,.035) 48%,transparent 73%);
+}
+.speedbox .dial-wrap{
+  filter:drop-shadow(0 0 22px rgba(0,103,190,.10)) drop-shadow(0 16px 26px rgba(0,0,0,.2));
+}
+.speedbox .dial-bg{fill:#030b15;fill-opacity:.56;stroke:#1b3550;stroke-width:1.15}
+.speedbox .dial-track{stroke:#10243a}
+.speedbox .dial-tick{stroke:#2a4662;opacity:.78}
+.speedbox .dial-tick.major{stroke:#91abc6;opacity:.9}
+.speed{ text-shadow:0 0 34px rgba(22,140,255,.16),0 3px 24px rgba(0,0,0,.4)!important }
+.speedlabel{color:#9ab0c9}
+.stat{
+  border-color:#1c344c;
+  background:linear-gradient(145deg,rgba(6,16,28,.98),rgba(4,11,20,.98));
+  box-shadow:inset 0 1px 0 rgba(127,180,222,.025),0 5px 15px rgba(0,0,0,.12);
+}
+#start{
+  background:linear-gradient(112deg,#086bc9 0%,#087fe8 55%,#168fff 100%);
+  box-shadow:0 8px 24px rgba(0,94,190,.23),inset 0 1px 0 rgba(255,255,255,.12);
+}
+#reset{
+  background:linear-gradient(145deg,#0a1726,#060e19);
+  border-color:#263f59;
+  box-shadow:inset 0 1px 0 rgba(150,194,230,.035);
+}
+.menu-btn{
+  background:rgba(4,12,22,.92);
+  border-color:#294663;
+  box-shadow:0 8px 22px rgba(0,0,0,.38),inset 0 1px 0 rgba(140,190,230,.04);
+}
+.footer{color:#526981;text-shadow:0 2px 12px rgba(0,0,0,.7)}
+.note{color:#71879f}
+.overlay,.picker-overlay,#srpDialogOverlay{
+  background-color:rgba(0,3,8,.94)!important;
+}
+.modal,.picker-panel{
+  background:
+    radial-gradient(ellipse at 100% 0%,rgba(0,93,169,.13),transparent 44%),
+    linear-gradient(150deg,#081626,#030911 80%);
+  border-color:#203c57;
+  box-shadow:0 24px 80px rgba(0,0,0,.72),inset 0 1px 0 rgba(130,185,230,.035);
+}
+.menu-item,.graph-card,.saved-run,.picker-option{
+  background:linear-gradient(145deg,#071422,#040b14);
+  border-color:#1c354d;
+}
+.graph-picker-btn{
+  background:linear-gradient(145deg,#0a1b2d,#050d18);
+  border-color:#294967;
+}
+.graph-picker-btn:hover,.menu-item:hover,.picker-option:hover{border-color:#3476a6}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+
 </style>
 </head>
 <body>
@@ -320,7 +415,7 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.13</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.14</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
