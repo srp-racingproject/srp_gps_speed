@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050b15">
-<meta name="app-version" content="1.0.10">
+<meta name="app-version" content="1.0.11">
 <meta name="application-name" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-title" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -144,7 +144,7 @@ button:active{transform:scale(.985)}
 .picker-option.selected{border-color:#168fff;background:linear-gradient(110deg,#073c70,#0b2b4a);box-shadow:inset 3px 0 #28b7ff}
 .picker-option:active{background:#12395b}
 
-/* SRP Motion System v1.0.10 — soft, purposeful transitions across the app */
+/* SRP Motion System v1.0.11 — soft, purposeful transitions across the app */
 :root{--motion-out:cubic-bezier(.22,1,.36,1);--motion-spring:cubic-bezier(.2,1.35,.35,1);--motion-fast:180ms;--motion-ui:360ms}
 @keyframes srpBackdropIn{from{opacity:0}to{opacity:1}}
 @keyframes srpPanelFromSide{0%{opacity:0;transform:translate3d(34px,0,0) scale(.985)}72%{opacity:1;transform:translate3d(-2px,0,0) scale(1.002)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
@@ -219,7 +219,7 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
 @media(max-height:650px){.menu-btn{width:36px;height:36px;padding:8px;top:8px;left:8px}.modal-head{padding:10px}.modal-body{padding:10px}#speedDistanceChart{min-height:180px}}
 
 
-/* SRP v1.0.10 — unified soft dialog motion; overlay swaps are atomic to prevent home-screen flicker */
+/* SRP v1.0.11 — unified soft dialog motion; overlay swaps are atomic to prevent home-screen flicker */
 .overlay.open .modal,
 .picker-overlay.open .picker-panel,
 #srpDialogOverlay.open .srp-dialog {
@@ -251,6 +251,23 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
   #srpDialogOverlay.open .srp-dialog { animation: none !important; }
 }
 
+
+/* SRP v1.0.11 — eliminate home-screen flash during modal navigation.
+   Keep the backdrop fully present from the first frame; animate only the panel. */
+.overlay, .picker-overlay, #srpDialogOverlay {
+  background-color: rgba(2, 7, 15, .97) !important;
+  -webkit-backdrop-filter: blur(9px);
+  backdrop-filter: blur(9px);
+}
+.overlay.open, .picker-overlay.open, #srpDialogOverlay.open {
+  animation: none !important;
+}
+.overlay.open .modal, .picker-overlay.open .picker-panel, #srpDialogOverlay.open .srp-dialog {
+  animation: srpDialogPop 420ms cubic-bezier(.22,1,.36,1) both !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .overlay.open .modal, .picker-overlay.open .picker-panel, #srpDialogOverlay.open .srp-dialog { animation: none !important; }
+}
 </style>
 </head>
 <body>
@@ -303,7 +320,7 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.10</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.11</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
