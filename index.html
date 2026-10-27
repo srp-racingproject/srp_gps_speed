@@ -146,6 +146,17 @@ button:active{transform:scale(.985)}
 .picker-option.selected{border-color:#168fff;background:linear-gradient(110deg,#073c70,#0b2b4a);box-shadow:inset 3px 0 #28b7ff}
 .picker-option:active{background:#12395b}
 
+/* SRP GPS SPEED v1.0.16 — compact menu and paired graph controls */
+.menu-item{padding:13px 15px;margin-bottom:8px;font-size:16px;min-height:0}
+.menu-item small{display:none}
+#menuOverlay .modal-head h2{letter-spacing:.08em;font-weight:900}
+.graph-tools{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:stretch}
+.graph-tools .graph-picker-btn{width:100%;min-width:0;min-height:44px;box-sizing:border-box;padding:9px 11px;font-size:13px}
+.graph-tools #compareBtn,.graph-tools #clearCompareBtn{width:100%;min-width:0;min-height:42px;box-sizing:border-box;padding:9px 12px;border-radius:10px;font-size:14px;font-weight:850}
+.graph-tools #compareBtn{background:linear-gradient(110deg,#0876df,#168fff);border-color:#168fff;color:#fff;box-shadow:0 5px 16px #0876df22}
+.graph-tools #clearCompareBtn.clear-compare-btn{background:linear-gradient(110deg,#54212d,#3b1721);border-color:#a94b60;color:#ffd6de}
+@media(max-width:360px){.graph-tools{gap:6px}.graph-tools .graph-picker-btn{padding:8px;font-size:12px}.graph-tools #compareBtn,.graph-tools #clearCompareBtn{font-size:13px}}
+
 /* SRP Motion System v1.0.11 — soft, purposeful transitions across the app */
 :root{--motion-out:cubic-bezier(.22,1,.36,1);--motion-spring:cubic-bezier(.2,1.35,.35,1);--motion-fast:180ms;--motion-ui:360ms}
 @keyframes srpBackdropIn{from{opacity:0}to{opacity:1}}
@@ -271,7 +282,7 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
   .overlay.open .modal, .picker-overlay.open .picker-panel, #srpDialogOverlay.open .srp-dialog { animation: none !important; }
 }
 
-/* SRP GPS SPEED — Velocity Lab inspired premium dark finish v1.0.15
+/* SRP GPS SPEED — Velocity Lab inspired premium dark finish v1.0.16
    Visual-only skin: keep layout, labels, controls and GPS behavior unchanged. */
 :root{
   --bg:#03070d;--panel:#060d17;--line:#1b3550;
@@ -417,16 +428,15 @@ body:before{
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.15</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.16</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
   <section class="modal">
-    <header class="modal-head"><h2>เมนู SRP GPS SPEED</h2><button class="close-btn" id="closeMenu" aria-label="ปิด">×</button></header>
+    <header class="modal-head"><h2>MENU</h2><button class="close-btn" id="closeMenu" aria-label="ปิด">×</button></header>
     <div class="modal-body">
-      <button class="menu-item" id="openSettings">⚙️ ตั้งค่าแอปและสิทธิ์ GPS<small>ตรวจสอบสถานะตำแหน่ง และดูวิธีเปิดสิทธิ์จากเบราว์เซอร์</small></button>
-      <button class="menu-item" id="openGraph">📈 กราฟวิเคราะห์<small>เปิดกราฟความเร็วเทียบระยะทาง และเปรียบเทียบผลการทดสอบ</small></button>
-      <p class="helper">ข้อมูลกราฟจะถูกบันทึกในเครื่องนี้โดยอัตโนมัติเมื่อกด “รีเซ็ต” หลังการวัด ข้อมูลไม่ได้ส่งขึ้นเซิร์ฟเวอร์</p>
+      <button class="menu-item" id="openSettings">การเข้าถึงตำแหน่ง GPS</button>
+      <button class="menu-item" id="openGraph">กราฟวิเคราะห์</button>
     </div>
   </section>
 </div>
@@ -459,11 +469,11 @@ body:before{
     <div class="modal-body">
       <div class="graph-tools">
         <select id="mainRunSelect" aria-label="เลือกกราฟหลัก"></select>
-        <button type="button" id="mainRunPicker" class="graph-picker-btn"><span class="picker-label">เลือกกราฟหลัก</span><span class="picker-chevron">⌄</span></button>
+        <button type="button" id="mainRunPicker" class="graph-picker-btn"><span class="picker-label">กราฟหลัก</span><span class="picker-chevron">⌄</span></button>
         <select id="compareRunSelect" aria-label="เลือกไฟล์กราฟเพื่อเปรียบเทียบ"></select>
-        <button type="button" id="compareRunPicker" class="graph-picker-btn"><span class="picker-label">เลือกไฟล์กราฟมาเทียบ</span><span class="picker-chevron">⌄</span></button>
-        <button class="primary" id="compareBtn">แอดกราฟเทียบ</button>
-        <button id="clearCompareBtn">เอากราฟเทียบออก</button>
+        <button type="button" id="compareRunPicker" class="graph-picker-btn"><span class="picker-label">กราฟเทียบ</span><span class="picker-chevron">⌄</span></button>
+        <button class="primary" id="compareBtn">เทียบ</button>
+        <button id="clearCompareBtn" class="clear-compare-btn">นำออก</button>
       </div>
       <div id="chartCard" class="graph-card">
         <h3 id="chartTitle">เลือกไฟล์กราฟที่บันทึกไว้</h3>
@@ -798,8 +808,8 @@ body:before{
    if(!currentGraphId&&savedRuns.length)currentGraphId=savedRuns[0].id;
    if(currentGraphId&&!savedRuns.some(r=>r.id===currentGraphId))currentGraphId=savedRuns[0]?.id||null;
    if(compareGraphId===currentGraphId||!savedRuns.some(r=>r.id===compareGraphId))compareGraphId=null;
-   fillSelect($('mainRunSelect'),savedRuns,'เลือกกราฟหลัก',currentGraphId);
-   fillSelect($('compareRunSelect'),savedRuns.filter(r=>r.id!==currentGraphId),'เลือกไฟล์กราฟมาเทียบ',compareGraphId);
+   fillSelect($('mainRunSelect'),savedRuns,'กราฟหลัก',currentGraphId);
+   fillSelect($('compareRunSelect'),savedRuns.filter(r=>r.id!==currentGraphId),'กราฟเทียบ',compareGraphId);
    const list=$('savedRunsList');list.innerHTML='';
    if(!savedRuns.length){list.innerHTML='<div class="empty-state">ยังไม่มีไฟล์กราฟ<br>เริ่มวัดความเร็ว แล้วกดรีเซ็ตเพื่อบันทึกผล</div>';}
    savedRuns.forEach(r=>{
@@ -907,12 +917,12 @@ body:before{
  $('closeGraph').addEventListener('click',()=>closeOverlay(graphOverlay));
  $('backToMenu').addEventListener('click',()=>switchOverlay(graphOverlay,menuOverlay));
  [menuOverlay,graphOverlay,settingsOverlay].forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOverlay(o);}));
- $('mainRunPicker').addEventListener('click',()=>openGraphPicker('mainRunSelect','เลือกกราฟหลัก'));
- $('compareRunPicker').addEventListener('click',()=>openGraphPicker('compareRunSelect','เลือกไฟล์กราฟมาเทียบ'));
+ $('mainRunPicker').addEventListener('click',()=>openGraphPicker('mainRunSelect','กราฟหลัก'));
+ $('compareRunPicker').addEventListener('click',()=>openGraphPicker('compareRunSelect','กราฟเทียบ'));
  $('closeGraphPicker').addEventListener('click',()=>{$('graphPickerOverlay').classList.remove('open');activePickerSelect=null;});
  $('graphPickerOverlay').addEventListener('click',e=>{if(e.target===$('graphPickerOverlay')){$('graphPickerOverlay').classList.remove('open');activePickerSelect=null;}});
  $('mainRunSelect').addEventListener('change',e=>{currentGraphId=e.target.value||null;if(compareGraphId===currentGraphId)compareGraphId=null;refreshGraphUI();});
- $('compareRunSelect').addEventListener('change',()=>{const sel=$('compareRunSelect'),chosen=savedRuns.find(r=>r.id===sel.value);const btn=$('compareRunPicker');btn.querySelector('.picker-label').textContent=chosen?runLabel(chosen):'เลือกไฟล์กราฟมาเทียบ';btn.setAttribute('aria-label',chosen?runLabel(chosen):'เลือกไฟล์กราฟมาเทียบ');});
+ $('compareRunSelect').addEventListener('change',()=>{const sel=$('compareRunSelect'),chosen=savedRuns.find(r=>r.id===sel.value);const btn=$('compareRunPicker');btn.querySelector('.picker-label').textContent=chosen?runLabel(chosen):'กราฟเทียบ';btn.setAttribute('aria-label',chosen?runLabel(chosen):'กราฟเทียบ');});
  $('compareBtn').addEventListener('click',async()=>{const id=$('compareRunSelect').value;if(!id){await appDialog('กรุณาเลือกไฟล์กราฟที่ต้องการเปรียบเทียบก่อน',{title:'ยังไม่ได้เลือกกราฟ'});return;}if(id===currentGraphId){await appDialog('กรุณาเลือกไฟล์กราฟอื่นที่ไม่ใช่กราฟหลัก',{title:'เลือกกราฟคนละไฟล์'});return;}compareGraphId=id;drawGraph();});
  $('clearCompareBtn').addEventListener('click',()=>{compareGraphId=null;refreshGraphUI();});
  document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeOverlay(menuOverlay);closeOverlay(graphOverlay);closeOverlay(settingsOverlay);$('graphPickerOverlay').classList.remove('open');$('resetChoiceOverlay').classList.remove('open');if($('srpDialogOverlay').classList.contains('open'))$('srpDialogOverlay').classList.remove('open');}});
