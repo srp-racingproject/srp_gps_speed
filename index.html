@@ -240,7 +240,7 @@ button:active{transform:scale(.985)}
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.5</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.6</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
@@ -440,16 +440,51 @@ button:active{transform:scale(.985)}
  }
  function stopWatch(){if(watching!==null&&navigator.geolocation){navigator.geolocation.clearWatch(watching);watching=null;}}
 
- const start=()=>{
+ let starting=false;
+ const permissionHelp=()=>appDialog('ยังไม่ได้อนุญาตให้เข้าถึงตำแหน่ง GPS กรุณากดอนุญาตเมื่อมีหน้าต่างขอสิทธิ์ หากเคยกดปฏิเสธแล้ว ให้เปิดการตั้งค่าเว็บไซต์/แอปของเบราว์เซอร์ แล้วเปลี่ยน Location เป็น Allow จากนั้นกลับมากดเริ่มวัดความเร็วอีกครั้ง',{title:'ต้องอนุญาตตำแหน่ง GPS'});
+ const beginTracking=()=>{
   if(running)return;
-  if(!navigator.geolocation){setStatus('เบราว์เซอร์นี้ไม่รองรับ GPS');return;}
-  if(!window.isSecureContext){setStatus('ต้องเปิดผ่าน HTTPS (GitHub Pages)');return;}
   running=true;startedAt=Date.now();lastFixAt=Date.now();speedNow=0;
   if(graphSamples.length===0)graphSamples.push({x:+(distanceM/1000).toFixed(4),y:0,t:Date.now()});
   $('start').textContent='Ⅱ  หยุดชั่วคราว';
   setStatus('กำลังค้นหาสัญญาณ GPS…',true);
   lockScreen();startWatch();
   tick=setInterval(render,500);
+ };
+ const start=async()=>{
+  if(running||starting)return;
+  if(!navigator.geolocation){setStatus('เบราว์เซอร์นี้ไม่รองรับ GPS');await appDialog('เบราว์เซอร์นี้ไม่รองรับการใช้งาน GPS',{title:'ไม่สามารถใช้ GPS ได้'});return;}
+  if(!window.isSecureContext){setStatus('ต้องเปิดผ่าน HTTPS (GitHub Pages)');await appDialog('กรุณาเปิดแอปผ่านลิงก์ HTTPS ของ GitHub Pages เพื่อใช้งาน GPS',{title:'ต้องใช้การเชื่อมต่อที่ปลอดภัย'});return;}
+  starting=true;
+  try{
+   let permissionState='prompt';
+   if(navigator.permissions&&navigator.permissions.query){
+    try{const permission=await navigator.permissions.query({name:'geolocation'});permissionState=permission.state;}catch(_){/* query may be unsupported; request through geolocation below */}
+   }
+   if(permissionState==='denied'){
+    setStatus('ยังไม่ได้รับอนุญาตให้ใช้ GPS · ตรวจสอบ Location');
+    await permissionHelp();
+    return;
+   }
+   if(permissionState==='prompt'){
+    // Calling the Geolocation API from the Start button triggers the browser's permission prompt.
+    const result=await new Promise(resolve=>navigator.geolocation.getCurrentPosition(
+     ()=>resolve('granted'),
+     error=>resolve(error&&error.code===1?'denied':'unavailable'),
+     {enableHighAccuracy:true,maximumAge:0,timeout:10000}
+    ));
+    if(result==='denied'){
+     setStatus('ยังไม่ได้รับอนุญาตให้ใช้ GPS · ตรวจสอบ Location');
+     await permissionHelp();
+     return;
+    }
+    // A timeout/no-fix is not a permission denial; start watching so GPS can acquire a fix.
+   }
+   beginTracking();
+  }catch(_){
+   setStatus('ไม่สามารถเริ่ม GPS ได้ · ตรวจสอบ Location');
+   await permissionHelp();
+  }finally{starting=false;}
  };
  const pause=()=>{
   if(!running)return;
