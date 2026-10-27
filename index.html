@@ -111,7 +111,7 @@ button:active{transform:scale(.985)}
 @keyframes srpFlagDrift{0%{transform:perspective(700px) rotate(-13deg) skewY(-7deg) translate3d(-1.5%,0,0) scale(1.16)}100%{transform:perspective(700px) rotate(-9deg) skewY(-3deg) translate3d(1.5%,-1%,0) scale(1.2)}}
 #srpSplash.hide{opacity:0;visibility:hidden;pointer-events:none}
 #srpSplash .splash-brand{position:relative;font-size:clamp(30px,9vw,46px);font-weight:1000;font-style:italic;letter-spacing:-1px;color:#f4f7ff;text-shadow:0 2px 2px #000,0 0 24px rgba(22,140,255,.24)}
-#srpSplash .splash-brand span{background:linear-gradient(100deg,#39d5ff 0%,#168bff 58%,#eaf5ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 10px rgba(22,139,255,.2))}
+#srpSplash .splash-brand span{background:linear-gradient(100deg,#7895b4 0%,#e7f4ff 28%,#50c8ff 56%,#a7c9e9 78%,#6386a9 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 2px 5px rgba(0,0,0,.65)) drop-shadow(0 0 12px rgba(35,145,220,.18))}
 #srpSplash .splash-line{position:relative;width:100px;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,#168cff 18%,#4dd9ff 56%,rgba(22,139,255,.15) 88%,transparent);box-shadow:0 0 15px rgba(22,140,255,.25)}
 #srpSplash .splash-credit{position:relative;color:#b7cbe0;font-size:clamp(12px,3.5vw,15px);font-weight:800;letter-spacing:1.4px;text-shadow:0 2px 8px #000}
 @media(prefers-reduced-motion:reduce){#srpSplash{transition:none}#srpSplash:before{animation:none}}
@@ -146,11 +146,11 @@ button:active{transform:scale(.985)}
 .picker-option.selected{border-color:#168fff;background:linear-gradient(110deg,#073c70,#0b2b4a);box-shadow:inset 3px 0 #28b7ff}
 .picker-option:active{background:#12395b}
 
-/* SRP GPS SPEED v1.0.18 — compact menu and paired graph controls */
+/* SRP GPS SPEED v1.0.19 — compact menu and paired graph controls */
 .menu-item{padding:13px 15px;margin-bottom:8px;font-size:16px;min-height:0}
 .menu-item small{display:none}
 #menuOverlay .modal-head h2{letter-spacing:.08em;font-weight:900}
-/* v1.0.18 — compact menu sized to its content, with premium SRP design credit */
+/* v1.0.19 — compact menu sized to its content, with premium SRP design credit */
 #menuOverlay{align-items:center;padding-top:max(12px,env(safe-area-inset-top));padding-bottom:max(12px,env(safe-area-inset-bottom))}
 #menuOverlay .modal{height:auto;max-height:calc(100dvh - max(24px,env(safe-area-inset-top) + env(safe-area-inset-bottom)));min-height:0;flex:0 1 auto;border-radius:22px;background:radial-gradient(ellipse at 88% 0%,rgba(17,94,151,.17),transparent 48%),linear-gradient(145deg,#0a192b 0%,#040b15 75%,#03070d 100%);box-shadow:0 22px 70px #000b,0 0 26px rgba(22,126,203,.06)}
 #menuOverlay .modal-head{padding:16px 18px}
@@ -291,7 +291,7 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
   .overlay.open .modal, .picker-overlay.open .picker-panel, #srpDialogOverlay.open .srp-dialog { animation: none !important; }
 }
 
-/* SRP GPS SPEED — Velocity Lab inspired premium dark finish v1.0.18
+/* SRP GPS SPEED — Velocity Lab inspired premium dark finish v1.0.19
    Visual-only skin: keep layout, labels, controls and GPS behavior unchanged. */
 :root{
   --bg:#03070d;--panel:#060d17;--line:#1b3550;
@@ -437,7 +437,7 @@ body:before{
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.18</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.19</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
