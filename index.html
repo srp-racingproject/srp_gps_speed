@@ -113,6 +113,37 @@ button:active{transform:scale(.985)}
 #srpSplash .splash-credit{position:relative;color:#b7cbe0;font-size:clamp(12px,3.5vw,15px);font-weight:800;letter-spacing:1.4px}
 @media(prefers-reduced-motion:reduce){#srpSplash{transition:none}}
 
+
+/* Graph analysis / hamburger menu */
+.menu-btn{position:absolute;z-index:20;top:clamp(12px,3vw,18px);left:clamp(12px,3vw,18px);width:42px;height:42px;padding:10px 9px;border:1px solid #2b4c6d;border-radius:11px;background:rgba(5,16,30,.88);display:flex;flex-direction:column;justify-content:center;gap:5px;box-shadow:0 5px 18px #0004}
+.menu-btn span{height:2.5px;width:100%;border-radius:3px;background:#f2f7ff;display:block}
+.overlay{position:fixed;inset:0;z-index:100000;background:rgba(0,5,12,.78);backdrop-filter:blur(9px);display:none;align-items:stretch;justify-content:center;padding: max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom))}
+.overlay.open{display:flex}
+.modal{width:min(100%,560px);height:100%;min-height:0;display:flex;flex-direction:column;border:1px solid #24405e;border-radius:18px;background:linear-gradient(145deg,#0b1a2d,#040b15);overflow:hidden;box-shadow:0 20px 70px #0009}
+.modal-head{display:flex;align-items:center;gap:10px;padding:16px;border-bottom:1px solid #213c59;flex:0 0 auto}
+.modal-head h2{margin:0;font-size:20px;flex:1}
+.close-btn{width:38px;height:38px;padding:0;border:1px solid #2a4562;background:#0a1727;color:#d9eaff;font-size:24px}
+.modal-body{padding:14px;overflow:auto;min-height:0;flex:1 1 auto}
+.menu-item{width:100%;text-align:left;padding:16px;border:1px solid #24405e;background:#0a1a2d;color:#f2f7ff;border-radius:12px;font-size:16px;margin-bottom:10px}
+.menu-item small{display:block;color:#8da6c0;font-size:12px;font-weight:500;margin-top:5px;white-space:normal}
+.graph-tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.graph-tools select,.graph-tools button,.secondary-btn{min-height:40px;padding:9px 11px;border-radius:9px;border:1px solid #2a4562;background:#0a1727;color:#e5f2ff;font-size:13px;font-weight:800;max-width:100%}
+.graph-tools select{flex:1 1 160px;min-width:0}
+.graph-tools button.primary{background:linear-gradient(110deg,#0876df,#168fff);border-color:#168fff}
+.graph-card{border:1px solid #203a56;border-radius:12px;background:#06111f;padding:10px;margin-bottom:12px}
+.graph-card h3{font-size:14px;margin:0 0 5px;overflow-wrap:anywhere}
+.graph-meta{font-size:11px;color:#8da6c0;margin-bottom:8px}
+#speedDistanceChart{width:100%;height:auto;display:block;min-height:220px}
+.chart-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:#b7cbe0;margin-top:7px}
+.legend-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.saved-list{display:flex;flex-direction:column;gap:8px}
+.saved-run{display:flex;align-items:center;gap:8px;border:1px solid #203a56;background:#081525;border-radius:10px;padding:10px}
+.saved-run button{white-space:normal;text-align:left;flex:1;background:transparent;padding:5px;color:#eaf4ff;font-size:13px}
+.saved-run .delete-run{flex:0 0 auto;width:36px;height:36px;padding:0;border:1px solid #4a2b39;background:#24121b;color:#ffb9c5}
+.empty-state{padding:25px 12px;text-align:center;color:#8da6c0;font-size:13px;border:1px dashed #2a4562;border-radius:12px}
+.helper{color:#8da6c0;font-size:12px;line-height:1.5;margin:8px 0}
+@media(max-height:650px){.menu-btn{width:36px;height:36px;padding:8px;top:8px;left:8px}.modal-head{padding:10px}.modal-body{padding:10px}#speedDistanceChart{min-height:180px}}
+
 </style>
 </head>
 <body>
@@ -127,6 +158,7 @@ button:active{transform:scale(.985)}
     <div class="clock" aria-live="off"><div id="time">--:--:--</div><div id="date">กำลังโหลดวันที่</div></div>
   </header>
   <section class="panel">
+    <button id="menuBtn" class="menu-btn" aria-label="เปิดเมนู" title="เมนู"><span></span><span></span><span></span></button>
     <div class="speedbox">
 
       <div class="dial-wrap" aria-hidden="true">
@@ -166,6 +198,40 @@ button:active{transform:scale(.985)}
   </section>
   <div class="footer">SRP • GPS SPEED • RIDE WITH DATA</div>
 </main>
+
+<div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
+  <section class="modal">
+    <header class="modal-head"><h2>เมนู SRP GPS SPEED</h2><button class="close-btn" id="closeMenu" aria-label="ปิด">×</button></header>
+    <div class="modal-body">
+      <button class="menu-item" id="openGraph">📈 กราฟวิเคราะห์<small>เปิดกราฟความเร็วเทียบระยะทาง และเปรียบเทียบผลการทดสอบ</small></button>
+      <p class="helper">ข้อมูลกราฟจะถูกบันทึกในเครื่องนี้โดยอัตโนมัติเมื่อกด “รีเซ็ต” หลังการวัด ข้อมูลไม่ได้ส่งขึ้นเซิร์ฟเวอร์</p>
+    </div>
+  </section>
+</div>
+
+<div id="graphOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="กราฟวิเคราะห์">
+  <section class="modal">
+    <header class="modal-head"><button class="close-btn" id="backToMenu" aria-label="กลับ">‹</button><h2>กราฟวิเคราะห์</h2><button class="close-btn" id="closeGraph" aria-label="ปิด">×</button></header>
+    <div class="modal-body">
+      <div class="graph-tools">
+        <select id="mainRunSelect" aria-label="เลือกกราฟหลัก"></select>
+        <select id="compareRunSelect" aria-label="เลือกไฟล์กราฟเพื่อเปรียบเทียบ"></select>
+        <button class="primary" id="compareBtn">แอดกราฟเทียบ</button>
+        <button id="clearCompareBtn">เอากราฟเทียบออก</button>
+      </div>
+      <div id="chartCard" class="graph-card">
+        <h3 id="chartTitle">เลือกไฟล์กราฟที่บันทึกไว้</h3>
+        <div id="chartMeta" class="graph-meta"></div>
+        <svg id="speedDistanceChart" viewBox="0 0 640 360" role="img" aria-label="กราฟความเร็วเทียบระยะทาง"></svg>
+        <div id="chartLegend" class="chart-legend"></div>
+      </div>
+      <h3 style="font-size:15px;margin:16px 0 9px">ไฟล์กราฟที่บันทึกไว้</h3>
+      <div id="savedRunsList" class="saved-list"></div>
+      <p class="helper">แกนนอน = ระยะทางสะสม (km) · แกนตั้ง = ความเร็ว GPS (km/h) · บันทึกอัตโนมัติเมื่อกดรีเซ็ตหลังการวัด ข้อมูลเก็บไว้ในเบราว์เซอร์ของอุปกรณ์นี้</p>
+    </div>
+  </section>
+</div>
+
 <script>
 (()=>{
   const splash=document.getElementById('srpSplash');
@@ -175,6 +241,26 @@ button:active{transform:scale(.985)}
     window.setTimeout(()=>splash.remove(),2350);
   }
  const $=id=>document.getElementById(id);
+ const RUNS_KEY='srp-gps-speed-graph-runs-v1';
+ let graphSamples=[];
+ let savedRuns=loadRuns();
+ let currentGraphId=null,compareGraphId=null;
+ function loadRuns(){try{const v=JSON.parse(localStorage.getItem(RUNS_KEY)||'[]');return Array.isArray(v)?v:[];}catch(e){return[];}}
+ function persistRuns(){try{localStorage.setItem(RUNS_KEY,JSON.stringify(savedRuns));}catch(e){alert('พื้นที่จัดเก็บข้อมูลเต็ม ไม่สามารถบันทึกกราฟได้');}}
+ function stamp(d){return d.toLocaleString('th-TH',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});}
+ function newRunName(d){
+   const day=p2(d.getDate()), month=p2(d.getMonth()+1), year=d.getFullYear()+543;
+   const hour=p2(d.getHours()), minute=p2(d.getMinutes());
+   return `${day}/${month}/${year} ${hour}.${minute}น.`;
+ }
+ function saveCurrentRun(){
+   if(graphSamples.length<2 && distanceM<=0 && maxSpeed<=0)return null;
+   const now=new Date();
+   const samples=graphSamples.slice();
+   if(samples.length===1)samples.push({...samples[0]});
+   const run={id:(Date.now().toString(36)+Math.random().toString(36).slice(2,7)),name:newRunName(now),savedAt:now.toISOString(),dateLabel:stamp(now),distanceKm:+(distanceM/1000).toFixed(4),maxSpeed:+maxSpeed.toFixed(1),avgSpeed:+(elapsed()>0?(distanceM/1000)/(elapsed()/3600):0).toFixed(1),elapsedSec:Math.floor(elapsed()),samples};
+   savedRuns.unshift(run);savedRuns=savedRuns.slice(0,100);persistRuns();return run;
+ }
  // ---- tuning ----
  const MAX_ACC=40;      // ignore fixes less accurate than 40 m
  const MIN_KMH=2;       // below this = standing still (GPS drift)
@@ -253,6 +339,11 @@ button:active{transform:scale(.985)}
    const cand=Math.min(speedNow,prevV);if(acc<=30&&cand>maxSpeed)maxSpeed=cand;prevV=speedNow;
   }
   setStatus('GPS เชื่อมต่อแล้ว · ±'+Math.round(acc)+' m',true);
+  if(running){
+    const point={x:+(distanceM/1000).toFixed(4),y:+speedNow.toFixed(1),t:now.t};
+    const prev=graphSamples[graphSamples.length-1];
+    if(!prev || point.x>prev.x+0.0001 || Math.abs(point.y-prev.y)>=0.5 || now.t-prev.t>=1500)graphSamples.push(point);
+  }
   render();
  }
  function onErr(err){
@@ -271,6 +362,7 @@ button:active{transform:scale(.985)}
   if(!navigator.geolocation){setStatus('เบราว์เซอร์นี้ไม่รองรับ GPS');return;}
   if(!window.isSecureContext){setStatus('ต้องเปิดผ่าน HTTPS (GitHub Pages)');return;}
   running=true;startedAt=Date.now();lastFixAt=Date.now();speedNow=0;
+  if(graphSamples.length===0)graphSamples.push({x:+(distanceM/1000).toFixed(4),y:0,t:Date.now()});
   $('start').textContent='Ⅱ  หยุดชั่วคราว';
   setStatus('กำลังค้นหาสัญญาณ GPS…',true);
   lockScreen();startWatch();
@@ -284,9 +376,13 @@ button:active{transform:scale(.985)}
   $('start').textContent='▶  เริ่มต่อ';setStatus('หยุดชั่วคราว');render();
  };
  const reset=()=>{
-  if(distanceM>50&&!confirm('รีเซ็ตข้อมูลการเดินทางทั้งหมด?'))return;
-  pause();elapsedBefore=0;distanceM=0;maxSpeed=0;speedNow=0;lastPos=null;
-  $('start').textContent='▶  เริ่มวัดความเร็ว';setStatus('พร้อมเริ่มวัดความเร็ว');render();
+  if(distanceM>50&&!confirm('บันทึกผลการทดสอบนี้แล้วรีเซ็ตใช่หรือไม่?'))return;
+  const wasRunning=running;
+  pause();
+  const saved=saveCurrentRun();
+  elapsedBefore=0;distanceM=0;maxSpeed=0;speedNow=0;lastPos=null;lastFixAt=0;prevV=0;graphSamples=[];
+  $('start').textContent='▶  เริ่มวัดความเร็ว';setStatus(saved?'บันทึกกราฟแล้ว · พร้อมเริ่มวัดความเร็ว':'พร้อมเริ่มวัดความเร็ว');render();
+  if(saved){currentGraphId=saved.id;refreshGraphUI();}
  };
 
  // when the app comes back to the front: re-lock screen and restart GPS (browsers may have killed it)
@@ -294,9 +390,87 @@ button:active{transform:scale(.985)}
   if(document.visibilityState==='visible'&&running){lockScreen();startWatch();lastFixAt=Date.now();}
  });
 
+ // ---- graph analysis UI ----
+ const menuOverlay=$('menuOverlay'),graphOverlay=$('graphOverlay');
+ function openOverlay(el){el.classList.add('open');}
+ function closeOverlay(el){el.classList.remove('open');}
+ function fmtDuration(sec){sec=Math.max(0,Math.floor(sec||0));return p2(Math.floor(sec/60))+':'+p2(sec%60);}
+ function runLabel(r){return `${r.name} · ${r.dateLabel||stamp(new Date(r.savedAt))}`;}
+ function fillSelect(sel,items,placeholder,selected){
+   sel.innerHTML='';
+   const opt=document.createElement('option');opt.value='';opt.textContent=placeholder;sel.appendChild(opt);
+   items.forEach(r=>{const o=document.createElement('option');o.value=r.id;o.textContent=runLabel(r);sel.appendChild(o);});
+   if(selected&&items.some(r=>r.id===selected))sel.value=selected;
+ }
+ function refreshGraphUI(){
+   savedRuns=loadRuns();
+   if(!currentGraphId&&savedRuns.length)currentGraphId=savedRuns[0].id;
+   if(currentGraphId&&!savedRuns.some(r=>r.id===currentGraphId))currentGraphId=savedRuns[0]?.id||null;
+   if(compareGraphId===currentGraphId||!savedRuns.some(r=>r.id===compareGraphId))compareGraphId=null;
+   fillSelect($('mainRunSelect'),savedRuns,'เลือกกราฟหลัก',currentGraphId);
+   fillSelect($('compareRunSelect'),savedRuns.filter(r=>r.id!==currentGraphId),'เลือกไฟล์กราฟมาเทียบ',compareGraphId);
+   const list=$('savedRunsList');list.innerHTML='';
+   if(!savedRuns.length){list.innerHTML='<div class="empty-state">ยังไม่มีไฟล์กราฟ<br>เริ่มวัดความเร็ว แล้วกดรีเซ็ตเพื่อบันทึกผล</div>';}
+   savedRuns.forEach(r=>{
+     const row=document.createElement('div');row.className='saved-run';
+     const b=document.createElement('button');b.innerHTML=`<strong>${escapeHTML(r.name)}</strong><br><span style="color:#8da6c0">${escapeHTML(r.dateLabel||stamp(new Date(r.savedAt)))} · MAX ${Number(r.maxSpeed||0).toFixed(1)} km/h · ${(Number(r.distanceKm)||0).toFixed(2)} km</span>`;
+     b.addEventListener('click',()=>{currentGraphId=r.id;compareGraphId=null;refreshGraphUI();drawGraph();});
+     const del=document.createElement('button');del.className='delete-run';del.textContent='×';del.title='ลบไฟล์กราฟ';del.addEventListener('click',()=>{if(confirm('ลบไฟล์กราฟ '+r.name+' ?')){savedRuns=savedRuns.filter(x=>x.id!==r.id);persistRuns();if(currentGraphId===r.id)currentGraphId=null;if(compareGraphId===r.id)compareGraphId=null;refreshGraphUI();drawGraph();}});
+     row.append(b,del);list.appendChild(row);
+   });
+   drawGraph();
+ }
+ function escapeHTML(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+ function drawGraph(){
+   const svg=$('speedDistanceChart'),main=savedRuns.find(r=>r.id===currentGraphId),other=savedRuns.find(r=>r.id===compareGraphId);
+   svg.innerHTML='';
+   $('chartTitle').textContent=main?main.name:'เลือกไฟล์กราฟที่บันทึกไว้';
+   $('chartMeta').textContent=main?`${main.dateLabel||stamp(new Date(main.savedAt))} · ระยะทาง ${(main.distanceKm||0).toFixed(2)} km · MAX ${(main.maxSpeed||0).toFixed(1)} km/h${other?'  |  เทียบกับ '+other.name:''}`:'';
+   const legend=$('chartLegend');legend.innerHTML='';
+   if(!main){svg.innerHTML='<text x="320" y="170" text-anchor="middle" fill="#8da6c0" font-size="15">ยังไม่มีข้อมูลกราฟ</text>';return;}
+   const sets=[{run:main,color:'#28b7ff',label:'กราฟหลัก'}];if(other)sets.push({run:other,color:'#ffb84d',label:'กราฟเปรียบเทียบ'});
+   const all=sets.flatMap(s=>(s.run.samples||[]).filter(p=>Number.isFinite(+p.x)&&Number.isFinite(+p.y)));
+   if(!all.length){svg.innerHTML='<text x="320" y="170" text-anchor="middle" fill="#8da6c0" font-size="15">ไฟล์นี้ไม่มีจุดข้อมูลกราฟ</text>';return;}
+   const maxX=Math.max(0.1,...all.map(p=>+p.x)),maxY=Math.max(20,...all.map(p=>+p.y));
+   const xMax=Math.ceil(maxX/0.5)*0.5||0.5,yMax=Math.ceil(maxY/20)*20||20;
+   const W=640,H=360,L=58,R=18,T=18,B=48,plotW=W-L-R,plotH=H-T-B;
+   const el=(tag,attrs={},textContent='')=>{const n=document.createElementNS('http://www.w3.org/2000/svg',tag);Object.entries(attrs).forEach(([k,v])=>n.setAttribute(k,v));if(textContent)n.textContent=textContent;svg.appendChild(n);return n;};
+   for(let i=0;i<=5;i++){
+     const y=T+plotH*i/5,val=yMax*(1-i/5);
+     el('line',{x1:L,y1:y,x2:W-R,y2:y,stroke:'#1d354e','stroke-width':1});
+     el('text',{x:L-9,y:y+4,'text-anchor':'end',fill:'#8da6c0','font-size':11},String(Math.round(val)));
+   }
+   for(let i=0;i<=5;i++){
+     const x=L+plotW*i/5,val=xMax*i/5;
+     el('line',{x1:x,y1:T,x2:x,y2:T+plotH,stroke:'#142a40','stroke-width':1});
+     el('text',{x,y:T+plotH+20,'text-anchor':'middle',fill:'#8da6c0','font-size':11},val.toFixed(1));
+   }
+   el('line',{x1:L,y1:T,x2:L,y2:T+plotH,stroke:'#55708a','stroke-width':1.5});
+   el('line',{x1:L,y1:T+plotH,x2:W-R,y2:T+plotH,stroke:'#55708a','stroke-width':1.5});
+   el('text',{x:16,y:T+plotH/2,transform:`rotate(-90 16 ${T+plotH/2})`,'text-anchor':'middle',fill:'#c4d7e9','font-size':12},'ความเร็ว (km/h)');
+   el('text',{x:L+plotW/2,y:H-8,'text-anchor':'middle',fill:'#c4d7e9','font-size':12},'ระยะทาง (km)');
+   sets.forEach(s=>{
+     const pts=(s.run.samples||[]).filter(p=>Number.isFinite(+p.x)&&Number.isFinite(+p.y)).sort((a,b)=>a.t-b.t);
+     if(!pts.length)return;
+     const coords=pts.map(p=>[L+Math.max(0,Math.min(xMax,+p.x))/xMax*plotW,T+plotH-Math.max(0,Math.min(yMax,+p.y))/yMax*plotH]);
+     if(coords.length>1)el('polyline',{points:coords.map(p=>p.join(',')).join(' '),fill:'none',stroke:s.color,'stroke-width':2.8,'stroke-linejoin':'round','stroke-linecap':'round'});
+     coords.forEach((p,i)=>{if(coords.length<35||i%Math.ceil(coords.length/30)===0)el('circle',{cx:p[0],cy:p[1],r:2.8,fill:s.color,stroke:'#06111f','stroke-width':.8});});
+     const item=document.createElement('span');item.innerHTML=`<i class="legend-dot" style="background:${s.color}"></i>${s.label}: ${escapeHTML(s.run.name)}`;legend.appendChild(item);
+   });
+ }
+ $('menuBtn').addEventListener('click',()=>openOverlay(menuOverlay));
+ $('closeMenu').addEventListener('click',()=>closeOverlay(menuOverlay));
+ $('openGraph').addEventListener('click',()=>{closeOverlay(menuOverlay);refreshGraphUI();openOverlay(graphOverlay);});
+ $('closeGraph').addEventListener('click',()=>closeOverlay(graphOverlay));
+ $('backToMenu').addEventListener('click',()=>{closeOverlay(graphOverlay);openOverlay(menuOverlay);});
+ [menuOverlay,graphOverlay].forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOverlay(o);}));
+ $('mainRunSelect').addEventListener('change',e=>{currentGraphId=e.target.value||null;if(compareGraphId===currentGraphId)compareGraphId=null;refreshGraphUI();});
+ $('compareBtn').addEventListener('click',()=>{const id=$('compareRunSelect').value;if(!id){alert('เลือกไฟล์กราฟที่ต้องการเปรียบเทียบก่อน');return;}if(id===currentGraphId){alert('เลือกไฟล์อื่นที่ไม่ใช่กราฟหลัก');return;}compareGraphId=id;drawGraph();});
+ $('clearCompareBtn').addEventListener('click',()=>{compareGraphId=null;refreshGraphUI();});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeOverlay(menuOverlay);closeOverlay(graphOverlay);}});
  $('start').addEventListener('click',()=>running?pause():start());
  $('reset').addEventListener('click',reset);
- updateClock();setInterval(updateClock,1000);render();
+ updateClock();setInterval(updateClock,1000);render();refreshGraphUI();
 })();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
 </script>
