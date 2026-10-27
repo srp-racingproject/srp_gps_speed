@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050b15">
-<meta name="app-version" content="1.0.9">
+<meta name="app-version" content="1.0.10">
 <meta name="application-name" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-title" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -144,14 +144,14 @@ button:active{transform:scale(.985)}
 .picker-option.selected{border-color:#168fff;background:linear-gradient(110deg,#073c70,#0b2b4a);box-shadow:inset 3px 0 #28b7ff}
 .picker-option:active{background:#12395b}
 
-/* SRP Motion System v1.0.9 — soft, purposeful transitions across the app */
+/* SRP Motion System v1.0.10 — soft, purposeful transitions across the app */
 :root{--motion-out:cubic-bezier(.22,1,.36,1);--motion-spring:cubic-bezier(.2,1.35,.35,1);--motion-fast:180ms;--motion-ui:360ms}
 @keyframes srpBackdropIn{from{opacity:0}to{opacity:1}}
 @keyframes srpPanelFromSide{0%{opacity:0;transform:translate3d(34px,0,0) scale(.985)}72%{opacity:1;transform:translate3d(-2px,0,0) scale(1.002)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
 @keyframes srpPickerRise{0%{opacity:0;transform:translate3d(0,24px,0) scale(.97)}72%{opacity:1;transform:translate3d(0,-2px,0) scale(1.006)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
 @keyframes srpDialogPop{0%{opacity:0;transform:translate3d(0,14px,0) scale(.92)}68%{opacity:1;transform:translate3d(0,-2px,0) scale(1.012)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
 @keyframes srpSoftFade{from{opacity:0}to{opacity:1}}
-.overlay.open{animation:srpBackdropIn 220ms ease-out both}
+.overlay.open{animation:srpBackdropIn 220ms ease-out both;isolation:isolate}
 .overlay.open .modal{animation:srpPanelFromSide 440ms var(--motion-spring) both;transform-origin:center right;will-change:transform,opacity}
 .picker-overlay.open{animation:srpBackdropIn 220ms ease-out both}
 .picker-overlay.open .picker-panel{animation:srpPickerRise 400ms var(--motion-spring) both;will-change:transform,opacity}
@@ -219,7 +219,7 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
 @media(max-height:650px){.menu-btn{width:36px;height:36px;padding:8px;top:8px;left:8px}.modal-head{padding:10px}.modal-body{padding:10px}#speedDistanceChart{min-height:180px}}
 
 
-/* SRP v1.0.9 — unified soft dialog motion for every popup and screen panel */
+/* SRP v1.0.10 — unified soft dialog motion; overlay swaps are atomic to prevent home-screen flicker */
 .overlay.open .modal,
 .picker-overlay.open .picker-panel,
 #srpDialogOverlay.open .srp-dialog {
@@ -303,7 +303,7 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.9</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.10</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
@@ -606,6 +606,9 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
  const menuOverlay=$('menuOverlay'),graphOverlay=$('graphOverlay'),settingsOverlay=$('settingsOverlay');
  function openOverlay(el){el.classList.add('open');}
  function closeOverlay(el){el.classList.remove('open');}
+ // Switch overlays atomically: reveal the destination before hiding the source,
+ // so the home screen is never painted between panels. Both changes happen in one task.
+ function switchOverlay(from,to){to.classList.add('open');from.classList.remove('open');}
  function fmtDuration(sec){sec=Math.max(0,Math.floor(sec||0));return p2(Math.floor(sec/60))+':'+p2(sec%60);}
  function runLabel(r){return `${r.name} · ${r.dateLabel||stamp(new Date(r.savedAt))}`;}
  function fillSelect(sel,items,placeholder,selected){
@@ -739,14 +742,14 @@ button:not(:disabled):active{transform:scale(.975);filter:brightness(1.12)}
  chart.addEventListener('pointerdown',e=>updateProbe(e.clientX));
  $('menuBtn').addEventListener('click',()=>openOverlay(menuOverlay));
  $('closeMenu').addEventListener('click',()=>closeOverlay(menuOverlay));
- $('openGraph').addEventListener('click',()=>{closeOverlay(menuOverlay);refreshGraphUI();openOverlay(graphOverlay);});
- $('openSettings').addEventListener('click',()=>{refreshGpsPermissionStatus();closeOverlay(menuOverlay);openOverlay(settingsOverlay);});
+ $('openGraph').addEventListener('click',()=>{refreshGraphUI();switchOverlay(menuOverlay,graphOverlay);});
+ $('openSettings').addEventListener('click',()=>{refreshGpsPermissionStatus();switchOverlay(menuOverlay,settingsOverlay);});
  $('closeSettings').addEventListener('click',()=>closeOverlay(settingsOverlay));
- $('backToMenuFromSettings').addEventListener('click',()=>{closeOverlay(settingsOverlay);openOverlay(menuOverlay);});
+ $('backToMenuFromSettings').addEventListener('click',()=>switchOverlay(settingsOverlay,menuOverlay));
  async function refreshGpsPermissionStatus(){const el=$('gpsPermissionStatus');let state='unknown';try{if(navigator.permissions&&navigator.permissions.query){const p=await navigator.permissions.query({name:'geolocation'});state=p.state;}}catch(_){}el.textContent=state==='granted'?'อนุญาตแล้ว — พร้อมใช้งาน GPS':state==='denied'?'ถูกปฏิเสธ — เปิด Site settings → Location → Allow':state==='prompt'?'ยังรอการอนุญาต — กดปุ่มด้านล่างเพื่อขอสิทธิ์':'ตรวจสอบไม่ได้ในเบราว์เซอร์นี้ — กดปุ่มด้านล่างเพื่อทดสอบ';}
  $('requestGpsPermission').addEventListener('click',()=>{if(!navigator.geolocation){appDialog('เบราว์เซอร์นี้ไม่รองรับ GPS',{title:'ไม่รองรับ GPS'});return;}navigator.geolocation.getCurrentPosition(async()=>{await refreshGpsPermissionStatus();await appDialog('ได้รับสิทธิ์ตำแหน่งแล้ว คุณสามารถกลับไปกดเริ่มวัดความเร็วได้',{title:'อนุญาต GPS แล้ว'});},async err=>{await refreshGpsPermissionStatus();if(err.code===1){await appDialog('เบราว์เซอร์ปฏิเสธสิทธิ์หรือเคยบล็อกไว้ ให้ทำตามขั้นตอนในหน้านี้: Site settings → Location → Allow แล้วกลับมากดตรวจสอบอีกครั้ง',{title:'ต้องเปิดสิทธิ์ในเบราว์เซอร์'});}else{await appDialog('ยังหาตำแหน่งไม่ได้ ตรวจสอบว่าเปิด Location ของโทรศัพท์ และอนุญาตตำแหน่งให้เบราว์เซอร์แล้ว',{title:'ยังหาตำแหน่งไม่ได้'});}},{enableHighAccuracy:true,maximumAge:0,timeout:10000});});
  $('closeGraph').addEventListener('click',()=>closeOverlay(graphOverlay));
- $('backToMenu').addEventListener('click',()=>{closeOverlay(graphOverlay);openOverlay(menuOverlay);});
+ $('backToMenu').addEventListener('click',()=>switchOverlay(graphOverlay,menuOverlay));
  [menuOverlay,graphOverlay,settingsOverlay].forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeOverlay(o);}));
  $('mainRunPicker').addEventListener('click',()=>openGraphPicker('mainRunSelect','เลือกกราฟหลัก'));
  $('compareRunPicker').addEventListener('click',()=>openGraphPicker('compareRunSelect','เลือกไฟล์กราฟมาเทียบ'));
