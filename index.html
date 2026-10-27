@@ -555,9 +555,9 @@ body:before{
 #reset,.close-btn,.picker-close{box-shadow:0 0 10px rgba(22,140,255,.0034),inset 0 1px 0 rgba(150,220,255,.07)!important}
 .graph-tools #clearCompareBtn:after{filter:brightness(.85) drop-shadow(0 0 2px rgba(255,171,82,.0238)) drop-shadow(0 0 5px rgba(240,126,24,.01088))!important}
 
-/* SRP GPS SPEED v1.0.41 — GPU-friendly close rendering */
+/* SRP GPS SPEED v1.0.44 — adaptive rendering; faster close */
 :root{--srp-motion-ease:cubic-bezier(.1712,1,.3,1)}
-/* Keep the page visible through a persistent dark, blurred glass layer. */
+/* Let the browser choose its compositor; keep backdrop effects on the idle state. */
 .overlay,.picker-overlay,#srpDialogOverlay{
   background-color:rgba(2,7,15,.70)!important;
   -webkit-backdrop-filter:blur(12px) saturate(112%)!important;
@@ -571,14 +571,30 @@ body:before{
   animation:srpExpandFromTap 1120ms var(--srp-motion-ease) both!important;
   transform-origin:var(--srp-origin-x,50%) var(--srp-origin-y,50%)!important;
   will-change:transform,opacity;
+  -webkit-backface-visibility:hidden;
   backface-visibility:hidden;
 }
-/* Closing returns to the saved opening tap point, about 20.8% faster than opening (10% faster than v1.0.39). */
+/* The saved opening point remains the close destination. During closing, remove the expensive live backdrop blur while keeping the dark glass tint. */
+.overlay.closing,.picker-overlay.closing,#srpDialogOverlay.closing{
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
+  background-color:rgba(2,7,15,.78)!important;
+}
 .overlay.closing .modal,.picker-overlay.closing .picker-panel,#srpDialogOverlay.closing .srp-dialog{
-  animation:srpExpandFromTap 887ms var(--srp-motion-ease) reverse both!important;
+  animation:srpExpandFromTap 798ms var(--srp-motion-ease) reverse both!important;
   transform-origin:var(--srp-origin-x,50%) var(--srp-origin-y,50%)!important;
   will-change:transform,opacity;
+  -webkit-backface-visibility:hidden;
   backface-visibility:hidden;
+}
+/* On devices reporting constrained resources, avoid persistent compositing hints outside animation. */
+html.srp-low-render .overlay,html.srp-low-render .picker-overlay,html.srp-low-render #srpDialogOverlay{
+  -webkit-backdrop-filter:blur(7px)!important;
+  backdrop-filter:blur(7px)!important;
+}
+html.srp-low-render .overlay.closing,html.srp-low-render .picker-overlay.closing,html.srp-low-render #srpDialogOverlay.closing{
+  -webkit-backdrop-filter:none!important;
+  backdrop-filter:none!important;
 }
 /* Smooth, restrained feedback for all buttons; animation changes only transform/visual properties. */
 button:not(:disabled){transition:transform 600ms var(--srp-motion-ease),filter 600ms ease,box-shadow 600ms ease,border-color 520ms ease,background-color 520ms ease!important}
@@ -740,6 +756,15 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
 
 <script>
 (()=>{
+  // A conservative hint only: the browser still decides whether each frame uses GPU or CPU.
+  // Avoid heavier blur on devices that report limited memory/cores or data-saving mode.
+  try{
+    const nav=navigator;
+    const lowMemory=typeof nav.deviceMemory==='number'&&nav.deviceMemory<=3;
+    const fewCores=typeof nav.hardwareConcurrency==='number'&&nav.hardwareConcurrency<=4;
+    const saveData=!!(nav.connection&&nav.connection.saveData);
+    if(lowMemory||(fewCores&&saveData))document.documentElement.classList.add('srp-low-render');
+  }catch(_){/* feature detection is optional; default CSS remains safe */}
   const splash=document.getElementById('srpSplash');
   if(splash){
     // Always show the intro for 2 seconds after the HTML loads.
@@ -774,7 +799,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
   requestAnimationFrame(()=>{
    if(finished||!el.classList.contains('open'))return;
    el.classList.add('closing');
-   // Fallback only in case the browser drops animationend; leave slack beyond the 887ms close.
+   // Fallback only in case the browser drops animationend; leave slack beyond the 798ms close.
    fallbackTimer=window.setTimeout(finish,1250);
   });
  }
@@ -1268,4 +1293,4 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
-<!-- v1.0.41: GPU-friendly transforms; frame-synced close start; preserve opening tap origin -->
+<!-- v1.0.44: browser-managed GPU/CPU rendering; 798ms reverse close animation -->
