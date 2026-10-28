@@ -555,7 +555,7 @@ body:before{
 #reset,.close-btn,.picker-close{box-shadow:0 0 10px rgba(22,140,255,.0034),inset 0 1px 0 rgba(150,220,255,.07)!important}
 .graph-tools #clearCompareBtn:after{filter:brightness(.85) drop-shadow(0 0 2px rgba(255,171,82,.0238)) drop-shadow(0 0 5px rgba(240,126,24,.01088))!important}
 
-/* SRP GPS SPEED v1.0.44 — adaptive rendering; faster close */
+/* SRP GPS SPEED v1.0.45 — opening animation only; immediate close */
 :root{--srp-motion-ease:cubic-bezier(.1712,1,.3,1)}
 /* Let the browser choose its compositor; keep backdrop effects on the idle state. */
 .overlay,.picker-overlay,#srpDialogOverlay{
@@ -778,30 +778,10 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
  let currentGraphId=null,compareGraphId=null;
  function loadRuns(){try{const v=JSON.parse(localStorage.getItem(RUNS_KEY)||'[]');return Array.isArray(v)?v:[];}catch(e){return[];}}
  function closeOverlay(el){
-  if(!el||!el.classList.contains('open')||el.classList.contains('closing'))return;
-  const panel=el.querySelector('.modal,.picker-panel,.srp-dialog');
-  if(!panel){el.classList.remove('open','closing');return;}
-  // The opening origin is saved once when the overlay opens; never recalculate it on close.
-  let finished=false;
-  let fallbackTimer=0;
-  const finish=()=>{
-   if(finished)return;
-   finished=true;
-   window.clearTimeout(fallbackTimer);
-   panel.removeEventListener('animationend',onEnd);
-   if(el.classList.contains('closing'))el.classList.remove('open','closing');
-  };
-  const onEnd=e=>{
-   if(e.target===panel&&e.animationName==='srpExpandFromTap'&&el.classList.contains('closing'))finish();
-  };
-  panel.addEventListener('animationend',onEnd);
-  // Start on the next frame so the browser can commit the current visual state first.
-  requestAnimationFrame(()=>{
-   if(finished||!el.classList.contains('open'))return;
-   el.classList.add('closing');
-   // Fallback only in case the browser drops animationend; leave slack beyond the 798ms close.
-   fallbackTimer=window.setTimeout(finish,1250);
-  });
+  // Close immediately: keep the opening animation, but intentionally do not animate on close.
+  // This avoids close-time transform/blur work and prevents intermittent frame stalls.
+  if(!el||!el.classList.contains('open'))return;
+  el.classList.remove('open','closing');
  }
  function appDialog(message,{title='แจ้งเตือน',confirm=false,danger=false}={}){return new Promise(resolve=>{const ov=$('srpDialogOverlay'),actions=$('srpDialogActions');$('srpDialogTitle').textContent=title;$('srpDialogMessage').textContent=message;actions.innerHTML='';const finish=value=>{closeOverlay(ov);resolve(value);};if(confirm){const cancel=document.createElement('button');cancel.textContent='ยกเลิก';cancel.addEventListener('click',()=>finish(false));actions.appendChild(cancel);}const ok=document.createElement('button');ok.textContent=confirm?(danger?'ลบไฟล์':'ตกลง'):'ตกลง';ok.className='dialog-primary'+(danger?' dialog-danger':'');ok.addEventListener('click',()=>finish(true));actions.appendChild(ok);ov.classList.add('open');ok.focus();});}
  function persistRuns(){try{localStorage.setItem(RUNS_KEY,JSON.stringify(savedRuns));}catch(e){appDialog('พื้นที่จัดเก็บข้อมูลเต็ม ไม่สามารถบันทึกกราฟได้');}}
@@ -1293,4 +1273,4 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
-<!-- v1.0.44: browser-managed GPU/CPU rendering; 798ms reverse close animation -->
+<!-- v1.0.45: browser-managed rendering; opening animation only, immediate close -->
