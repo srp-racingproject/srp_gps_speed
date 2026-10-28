@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050b15">
-<meta name="app-version" content="1.0.47">
+<meta name="app-version" content="1.0.52">
 <meta name="application-name" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-title" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -80,14 +80,14 @@ button:active{transform:scale(.985)}
   margin:0;pointer-events:none;filter:drop-shadow(0 0 25px #078cff22);
 }
 .speedbox .dial-wrap svg{width:100%;height:100%;display:block;overflow:visible}
-.speedbox .dial-bg{fill:none;stroke:#1b3855;stroke-width:1.2;stroke-linecap:round}
+.speedbox .dial-bg{fill:none;stroke:rgba(70,163,226,.58);stroke-width:1.25;stroke-linecap:round;filter:url(#sweepGlow)}
 .speedbox .dial-track{fill:none;stroke:#122940;stroke-width:13;stroke-linecap:round}
 .speedbox .dial-progress{
   fill:none;stroke:url(#sweepGradient);stroke-width:13;stroke-linecap:round;
-  stroke-dasharray:0 500;transition:stroke-dasharray .18s linear;filter:url(#sweepGlow)
+  stroke-dasharray:0 600;transition:none;filter:url(#sweepGlow)
 }
-.speedbox .dial-tick{stroke:#35536f;stroke-width:1.2;stroke-linecap:round;opacity:.75}
-.speedbox .dial-tick.major{stroke:#8aa9c8;stroke-width:2;opacity:.9}
+.speedbox .dial-tick{stroke:#39718f;stroke-width:1.2;stroke-linecap:round;opacity:.82;filter:drop-shadow(0 0 2px rgba(48,205,232,.18))}
+.speedbox .dial-tick.major{stroke:#8cecff;stroke-width:2;opacity:.96;filter:drop-shadow(0 0 4px rgba(92,236,255,.42))}
 .speedbox .dial-tick.hot{stroke:#ff536d}
 .speedbox .dial-label{display:none}
 .speedbox .dial-center{display:none}
@@ -337,10 +337,10 @@ body:before{
 .speedbox .dial-wrap{
   filter:drop-shadow(0 0 22px rgba(0,103,190,.10)) drop-shadow(0 16px 26px rgba(0,0,0,.2));
 }
-.speedbox .dial-bg{fill:#030b15;fill-opacity:.56;stroke:#1b3550;stroke-width:1.15}
-.speedbox .dial-track{stroke:#10243a}
-.speedbox .dial-tick{stroke:#2a4662;opacity:.78}
-.speedbox .dial-tick.major{stroke:#91abc6;opacity:.9}
+.speedbox .dial-bg{fill:#030b15;fill-opacity:.56;stroke:rgba(70,163,226,.58);stroke-width:1.25;filter:url(#sweepGlow)}
+.speedbox .dial-track{stroke:rgba(34,91,128,.62);filter:drop-shadow(0 0 5px rgba(22,140,255,.16))}
+.speedbox .dial-tick{stroke:#39718f;opacity:.82;filter:drop-shadow(0 0 2px rgba(48,205,232,.18))}
+.speedbox .dial-tick.major{stroke:#8cecff;opacity:.96;filter:drop-shadow(0 0 4px rgba(92,236,255,.42))}
 .speed{ text-shadow:0 0 34px rgba(22,140,255,.16),0 3px 24px rgba(0,0,0,.4)!important }
 .speedlabel{color:#9ab0c9}
 .stat{
@@ -555,7 +555,7 @@ body:before{
 #reset,.close-btn,.picker-close{box-shadow:0 0 10px rgba(22,140,255,.0034),inset 0 1px 0 rgba(150,220,255,.07)!important}
 .graph-tools #clearCompareBtn:after{filter:brightness(.85) drop-shadow(0 0 2px rgba(255,171,82,.0238)) drop-shadow(0 0 5px rgba(240,126,24,.01088))!important}
 
-/* SRP GPS SPEED v1.0.47 — custom live GPS route HUD and shortened lower dial arc */
+/* SRP GPS SPEED v1.0.48 — ignition-style startup sweep and unified cyan route glow */
 :root{--srp-motion-ease:cubic-bezier(.1712,1,.3,1)}
 /* Let the browser choose its compositor; keep backdrop effects on the idle state. */
 .overlay,.picker-overlay,#srpDialogOverlay{
@@ -606,7 +606,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
 }
 
 
-/* v1.0.47 — compact live GPS route HUD; trim the excess lower dial arc */
+/* v1.0.48 — compact live GPS route HUD; trim the excess lower dial arc */
 .speedbox{position:relative;}
 .speedbox .dial-wrap{top:43%;}
 .speedbox .route-hud{
@@ -630,6 +630,81 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
 @media(max-height:650px){.speedbox .dial-wrap{top:39%;}.speedbox .route-hud{top:calc(50% + 42px);height:58px;width:min(55%,170px)}.route-hud-label{font-size:6px}#routeHint{font-size:6px}}
 @media(prefers-reduced-motion:reduce){.route-trail,.route-current{filter:none}}
 
+
+/* SRP GPS SPEED v1.0.49 — slightly squarer frame language; preserve LIVE TRACK GPS radius */
+.panel{border-radius:clamp(15px,3.8vw,20px)!important}
+.stat,.graph-card{border-radius:12px!important}
+.modal{border-radius:17px!important}
+.picker-panel{border-radius:18px!important}
+.srp-dialog{border-radius:18px!important}
+.menu-item,.graph-picker-btn,.picker-option{border-radius:12px!important}
+.saved-run{border-radius:10px!important}
+.close-btn,.picker-close,.menu-btn{border-radius:9px!important}
+#start,#reset,.graph-tools #compareBtn,.graph-tools #clearCompareBtn,
+.reset-choice-actions button,.srp-dialog-actions button{border-radius:12px!important}
+.graph-tools select,.graph-tools button,.secondary-btn{border-radius:8px!important}
+.probe-box,.run-name-input{border-radius:9px!important}
+.empty-state{border-radius:10px!important}
+/* Keep the LIVE TRACK GPS frame at its existing 13px radius and preserve its glow. */
+.speedbox .route-hud{border-radius:13px!important}
+
+
+/* SRP GPS SPEED v1.0.50 — unify frame strokes with LIVE TRACK GPS; retain its original frame. */
+.panel,.stat,.graph-card,.modal,.picker-panel,.srp-dialog,.menu-item,
+.graph-picker-btn,.picker-option,.saved-run,.close-btn,.picker-close,.menu-btn,
+#start,#reset,.graph-tools #compareBtn,.graph-tools #clearCompareBtn,
+.reset-choice-actions button,.srp-dialog-actions button,.graph-tools select,
+.graph-tools button,.secondary-btn,.probe-box,.run-name-input,.empty-state{
+  border-width:1px!important;
+  border-color:rgba(70,163,226,.38)!important;
+  box-shadow:inset 0 0 0 1px rgba(70,163,226,.025),0 0 10px rgba(0,128,255,.07)!important;
+}
+.panel:after,.stat:after,.modal:after,.picker-panel:after,.srp-dialog:after,
+.graph-card:after,.menu-item:after,.graph-picker-btn:after,.picker-option:after,
+.saved-run:after,.close-btn:after,.picker-close:after,
+#start:after,#reset:after,.graph-tools #compareBtn:after,
+.graph-tools #clearCompareBtn:after,.reset-choice-actions button:after,
+.srp-dialog-actions button:after{
+  padding:1px!important;
+  background:rgba(70,163,226,.38)!important;
+  opacity:1!important;
+  filter:drop-shadow(0 0 3px rgba(70,163,226,.20)) drop-shadow(0 0 8px rgba(22,140,255,.10))!important;
+}
+/* Keep the LIVE TRACK GPS border, radius, thickness and glow exactly as before. */
+.speedbox .route-hud{
+  border:1px solid rgba(70,163,226,.38)!important;
+  box-shadow:inset 0 0 16px rgba(10,100,180,.10),0 0 15px rgba(0,128,255,.07)!important;
+}
+/* Keep large digits readable at 3-digit speeds by moving the readout slightly right first. */
+.speedbox .speed{transform:translateX(7px)}
+.speedbox .speed em{font-size:clamp(12px,3.1vw,16px);letter-spacing:.4px;margin-left:4px}
+.speedbox.speed-three-digit .speed{font-size:clamp(66px,17.5vw,94px)!important;letter-spacing:-.075em}
+@media(max-height:760px){.speedbox.speed-three-digit .speed{font-size:clamp(62px,16.5vw,86px)!important}}
+@media(max-height:650px){.speedbox .speed{transform:translateX(5px)}.speedbox.speed-three-digit .speed{font-size:62px!important}}
+
+
+/* SRP GPS SPEED v1.0.52 — ultra-slim premium frame edges. */
+.panel,.stat,.graph-card,.modal,.picker-panel,.srp-dialog,.menu-item,
+.graph-picker-btn,.picker-option,.saved-run,.close-btn,.picker-close,.menu-btn,
+#start,#reset,.graph-tools #compareBtn,.graph-tools #clearCompareBtn,
+.reset-choice-actions button,.srp-dialog-actions button,.graph-tools select,
+.graph-tools button,.secondary-btn,.probe-box,.run-name-input,.empty-state{
+  border-width:.625px!important;
+}
+.panel:after,.stat:after,.modal:after,.picker-panel:after,.srp-dialog:after,
+.graph-card:after,.menu-item:after,.graph-picker-btn:after,.picker-option:after,
+.saved-run:after,.close-btn:after,.picker-close:after,
+#start:after,#reset:after,.graph-tools #compareBtn:after,
+.graph-tools #clearCompareBtn:after,.reset-choice-actions button:after,
+.srp-dialog-actions button:after{
+  padding:.625px!important;
+}
+/* The SVG sweep uses requestAnimationFrame, syncing updates to the screen refresh
+   (up to 120Hz on supported displays; actual FPS remains device/browser dependent). */
+.speedbox #dialPath,.speedbox .dial-bg{
+  shape-rendering:geometricPrecision;
+}
+
 </style>
 </head>
 <body>
@@ -650,13 +725,10 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
       <div class="dial-wrap" aria-hidden="true">
         <svg viewBox="0 0 240 240">
           <defs>
-            <linearGradient id="sweepGradient" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#29f0ff"/>
-              <stop offset="28%" stop-color="#168cff"/>
-              <stop offset="52%" stop-color="#31e69c"/>
-              <stop offset="70%" stop-color="#f5e642"/>
-              <stop offset="84%" stop-color="#ff9d3d"/>
-              <stop offset="100%" stop-color="#ff355d"/>
+            <linearGradient id="sweepGradient" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stop-color="#168cff"/>
+              <stop offset="55%" stop-color="#31e69c"/>
+              <stop offset="100%" stop-color="#5cecff"/>
             </linearGradient>
             <filter id="sweepGlow" x="-60%" y="-60%" width="220%" height="220%">
               <feGaussianBlur stdDeviation="3" result="blur"/>
@@ -700,7 +772,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.47</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.51</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
@@ -871,12 +943,41 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
       dialTicks.appendChild(line);
     }
   }
+  const DIAL_ARC=Math.PI*86*250/180;
   const updateDial=kmh=>{
     if(!dialPath)return;
-    const maxArc=Math.PI*86*250/180;
     const fraction=Math.max(0,Math.min(1,kmh/DIAL_MAX));
-    dialPath.style.strokeDasharray=`${(maxArc*fraction).toFixed(2)} 600`;
+    dialPath.style.strokeDasharray=`${(DIAL_ARC*fraction).toFixed(2)} 600`;
   };
+  const updateSpeedDigitLayout=kmh=>{
+    const box=document.querySelector('.speedbox');
+    if(box)box.classList.toggle('speed-three-digit',Number(kmh)>=100);
+  };
+
+  // Ignition-style startup self-test: sweep to the dial limit, then return smoothly.
+  // This is display-only and never changes GPS measurements or ride statistics.
+  let startupSweepPlayed=false;
+  const playStartupSweep=()=>{
+    if(startupSweepPlayed||!dialPath||!$('speed'))return;
+    startupSweepPlayed=true;
+    const speedEl=$('speed'),start=performance.now(),upMs=1180,downMs=920,total=upMs+downMs;
+    const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+    const frame=now=>{
+      const elapsed=Math.max(0,now-start);
+      let fraction;
+      if(elapsed<=upMs)fraction=ease(elapsed/upMs);
+      else if(elapsed<=total)fraction=1-ease((elapsed-upMs)/downMs);
+      else {speedEl.textContent=displaySpeed.toFixed(1);updateDial(displaySpeed);updateSpeedDigitLayout(displaySpeed);return;}
+      const demoSpeed=DIAL_MAX*fraction;
+      speedEl.textContent=demoSpeed.toFixed(1);
+      updateDial(demoSpeed);
+      updateSpeedDigitLayout(demoSpeed);
+      requestAnimationFrame(frame);
+    };
+    requestAnimationFrame(frame);
+  };
+  // Run just after the 2-second Developed splash begins to disappear.
+  window.setTimeout(playStartupSweep,2050);
 
   // Live route trace: draws accepted GPS fixes in a custom HUD (no map tiles or map UI).
   const routeTrail=$('routeTrail'),routeArrow=$('routeArrow'),routeCurrent=$('routeCurrent'),routeHint=$('routeHint');
@@ -931,6 +1032,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
   if(displaySpeed<.06)displaySpeed=0;
   $('speed').textContent=displaySpeed.toFixed(1);
   updateDial(displaySpeed);
+  updateSpeedDigitLayout(displaySpeed);
   $('distance').textContent=(distanceM/1000).toFixed(2);
   $('max').textContent=maxSpeed.toFixed(1);
   const e=elapsed();
@@ -1345,4 +1447,14 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
-<!-- v1.0.47: custom live GPS route HUD and shortened lower dial arc -->
+<!-- v1.0.48: ignition sweep animation and unified route HUD glow -->
+
+/* v1.0.52: halve non-track rim thickness and soften halo; LIVE TRACK styling remains untouched. */
+.panel:after,.stat:after,.modal:after,.picker-panel:after,.srp-dialog:after,
+.graph-card:after,.menu-item:after,.graph-picker-btn:after,.picker-option:after,
+.saved-run:after,.close-btn:after,.picker-close:after,#start:after,#reset:after,
+.graph-tools #compareBtn:after,.graph-tools #clearCompareBtn:after,
+.reset-choice-actions button:after,.srp-dialog-actions button:after{padding:.625px!important}
+.panel:after{filter:drop-shadow(0 0 1px rgba(69,208,255,.8)) drop-shadow(0 0 3.5px rgba(32,139,255,.42))}
+.stat:after,.graph-card:after,.menu-item:after,.graph-picker-btn:after,.picker-option:after,.saved-run:after{filter:drop-shadow(0 0 1px rgba(69,208,255,.75)) drop-shadow(0 0 3px rgba(32,139,255,.38))}
+.modal:after,.picker-panel:after,.srp-dialog:after{filter:drop-shadow(0 0 1px rgba(69,208,255,.75)) drop-shadow(0 0 3.5px rgba(32,139,255,.4))}
