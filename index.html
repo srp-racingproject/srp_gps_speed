@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050b15">
-<meta name="app-version" content="1.0.29">
+<meta name="app-version" content="1.0.47">
 <meta name="application-name" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-title" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -80,7 +80,7 @@ button:active{transform:scale(.985)}
   margin:0;pointer-events:none;filter:drop-shadow(0 0 25px #078cff22);
 }
 .speedbox .dial-wrap svg{width:100%;height:100%;display:block;overflow:visible}
-.speedbox .dial-bg{fill:#06101d;fill-opacity:.2;stroke:#1b3855;stroke-width:1.2}
+.speedbox .dial-bg{fill:none;stroke:#1b3855;stroke-width:1.2;stroke-linecap:round}
 .speedbox .dial-track{fill:none;stroke:#122940;stroke-width:13;stroke-linecap:round}
 .speedbox .dial-progress{
   fill:none;stroke:url(#sweepGradient);stroke-width:13;stroke-linecap:round;
@@ -555,7 +555,7 @@ body:before{
 #reset,.close-btn,.picker-close{box-shadow:0 0 10px rgba(22,140,255,.0034),inset 0 1px 0 rgba(150,220,255,.07)!important}
 .graph-tools #clearCompareBtn:after{filter:brightness(.85) drop-shadow(0 0 2px rgba(255,171,82,.0238)) drop-shadow(0 0 5px rgba(240,126,24,.01088))!important}
 
-/* SRP GPS SPEED v1.0.45 — opening animation only; immediate close */
+/* SRP GPS SPEED v1.0.47 — custom live GPS route HUD and shortened lower dial arc */
 :root{--srp-motion-ease:cubic-bezier(.1712,1,.3,1)}
 /* Let the browser choose its compositor; keep backdrop effects on the idle state. */
 .overlay,.picker-overlay,#srpDialogOverlay{
@@ -605,6 +605,31 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
  button:not(:disabled),button:not(:disabled):active{transition:none!important;transform:none!important}
 }
 
+
+/* v1.0.47 — compact live GPS route HUD; trim the excess lower dial arc */
+.speedbox{position:relative;}
+.speedbox .dial-wrap{top:43%;}
+.speedbox .route-hud{
+  position:absolute;z-index:2;left:50%;top:calc(50% + clamp(68px,22vw,104px));
+  transform:translateX(-50%);width:min(53%,210px);height:clamp(74px,21vw,92px);
+  border:1px solid rgba(70,163,226,.38);border-radius:13px;overflow:hidden;
+  background:linear-gradient(145deg,rgba(5,18,32,.91),rgba(2,9,18,.88));
+  box-shadow:inset 0 0 16px rgba(10,100,180,.10),0 0 15px rgba(0,128,255,.07);
+  backdrop-filter:blur(5px);pointer-events:none;
+}
+.route-hud-label{position:absolute;z-index:1;left:9px;top:5px;display:flex;align-items:center;gap:5px;font-size:7px;font-weight:900;letter-spacing:1.1px;color:#9ebbd5;line-height:1}
+.route-hud-label small{font-size:6px;color:#43cfff;letter-spacing:.8px}
+.route-live-dot{width:5px;height:5px;border-radius:50%;background:#31e69c;box-shadow:0 0 7px #31e69c;}
+#routeSvg{position:absolute;inset:0;width:100%;height:100%;overflow:hidden}
+.route-grid{fill:none;stroke:#254663;stroke-width:.6;stroke-dasharray:2 4;opacity:.34}
+.route-trail{fill:none;stroke:url(#routeGradient);stroke-width:3.3;stroke-linecap:round;stroke-linejoin:round;filter:url(#routeGlow)}
+.route-arrow{fill:none;stroke:#baf8ff;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;filter:url(#routeGlow)}
+.route-current{fill:#5cecff;stroke:#e1ffff;stroke-width:1;filter:url(#routeGlow)}
+#routeHint{font-size:7px;letter-spacing:1.1px;font-weight:800;fill:#6f8da9;opacity:.78}
+@media(max-height:760px){.speedbox .dial-wrap{top:41%;}.speedbox .route-hud{top:calc(50% + 58px);height:68px;width:min(54%,190px)}}
+@media(max-height:650px){.speedbox .dial-wrap{top:39%;}.speedbox .route-hud{top:calc(50% + 42px);height:58px;width:min(55%,170px)}.route-hud-label{font-size:6px}#routeHint{font-size:6px}}
+@media(prefers-reduced-motion:reduce){.route-trail,.route-current{filter:none}}
+
 </style>
 </head>
 <body>
@@ -638,7 +663,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
               <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
             </filter>
           </defs>
-          <circle class="dial-bg" cx="120" cy="120" r="105"/>
+          <path class="dial-bg" d="M 33.8 180 A 105 105 0 1 1 206.2 180"/>
           <path class="dial-track" d="M 48 169 A 86 86 0 1 1 192 169"/>
           <path id="dialProgress" class="dial-progress" d="M 48 169 A 86 86 0 1 1 192 169"/>
           <g id="dialTicks"></g>
@@ -647,6 +672,24 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
       <div class="speedlabel">CURRENT SPEED</div>
       <div class="speed"><span id="speed">0.0</span><em>km/h</em></div>
       <div class="status" id="status"><i></i><span>พร้อมเริ่มวัดความเร็ว</span></div>
+      <div class="route-hud" aria-label="เส้นทาง GPS ที่ขี่ผ่านมา">
+        <div class="route-hud-label"><span class="route-live-dot"></span> LIVE TRACK <small>GPS</small></div>
+        <svg id="routeSvg" viewBox="0 0 220 82" role="img" aria-label="เส้นทางการเคลื่อนที่">
+          <defs>
+            <linearGradient id="routeGradient" x1="0" y1="1" x2="1" y2="0">
+              <stop offset="0%" stop-color="#168cff"/>
+              <stop offset="55%" stop-color="#31e69c"/>
+              <stop offset="100%" stop-color="#5cecff"/>
+            </linearGradient>
+            <filter id="routeGlow" x="-40%" y="-60%" width="180%" height="220%"><feGaussianBlur stdDeviation="2.2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          </defs>
+          <path class="route-grid" d="M8 20H212 M8 41H212 M8 62H212 M55 10V72 M110 10V72 M165 10V72"/>
+          <path id="routeTrail" class="route-trail" d=""/>
+          <path id="routeArrow" class="route-arrow" d=""/>
+          <circle id="routeCurrent" class="route-current" cx="110" cy="41" r="3.8"/>
+          <text id="routeHint" x="110" y="47" text-anchor="middle">START RIDE TO TRACE</text>
+        </svg>
+      </div>
     </div>
     <div class="stats">
       <div class="stat"><label>ระยะทางรวม · DISTANCE</label><b id="distance">0.00</b><span>km</span></div>
@@ -657,7 +700,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.19</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.47</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
@@ -816,8 +859,8 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
   const dialTicks=$('dialTicks');
   const DIAL_MAX=240;
   if(dialTicks && !dialTicks.childElementCount){
-    for(let i=0;i<=30;i++){
-      const a=(-150+i*10)*Math.PI/180;
+    for(let i=0;i<=25;i++){
+      const a=(145+i*10)*Math.PI/180;
       const r1=92, r2=(i%5===0)?101:97;
       const line=document.createElementNS('http://www.w3.org/2000/svg','line');
       line.setAttribute('x1',(120+Math.cos(a)*r1).toFixed(2));
@@ -833,6 +876,34 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
     const maxArc=Math.PI*86*250/180;
     const fraction=Math.max(0,Math.min(1,kmh/DIAL_MAX));
     dialPath.style.strokeDasharray=`${(maxArc*fraction).toFixed(2)} 600`;
+  };
+
+  // Live route trace: draws accepted GPS fixes in a custom HUD (no map tiles or map UI).
+  const routeTrail=$('routeTrail'),routeArrow=$('routeArrow'),routeCurrent=$('routeCurrent'),routeHint=$('routeHint');
+  let routePoints=[];
+  const clearRoute=()=>{routePoints=[];if(routeTrail)routeTrail.setAttribute('d','');if(routeArrow)routeArrow.setAttribute('d','');if(routeCurrent){routeCurrent.setAttribute('cx','110');routeCurrent.setAttribute('cy','41');}if(routeHint)routeHint.style.display='';};
+  const drawRoute=()=>{
+    if(!routeTrail||routePoints.length<2)return;
+    const pts=routePoints.slice(-48),lat0=pts.reduce((a,p)=>a+p.lat,0)/pts.length,cosLat=Math.cos(lat0*Math.PI/180);
+    const raw=pts.map(p=>({x:(p.lon-pts[0].lon)*Math.cos(lat0*Math.PI/180)*111320,y:-(p.lat-pts[0].lat)*111320}));
+    let minX=Math.min(...raw.map(p=>p.x)),maxX=Math.max(...raw.map(p=>p.x)),minY=Math.min(...raw.map(p=>p.y)),maxY=Math.max(...raw.map(p=>p.y));
+    const rw=Math.max(2,maxX-minX),rh=Math.max(2,maxY-minY),scale=Math.min(184/rw,51/rh);
+    const ox=110-(minX+maxX)/2*scale,oy=46-(minY+maxY)/2*scale;
+    const mapped=raw.map(p=>({x:ox+p.x*scale,y:oy+p.y*scale}));
+    const d=mapped.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+    routeTrail.setAttribute('d',d);
+    const a=mapped[mapped.length-2],b=mapped[mapped.length-1],ang=Math.atan2(b.y-a.y,b.x-a.x),len=6;
+    const p1={x:b.x-len*Math.cos(ang-.58),y:b.y-len*Math.sin(ang-.58)},p2={x:b.x-len*Math.cos(ang+.58),y:b.y-len*Math.sin(ang+.58)};
+    routeArrow.setAttribute('d',`M ${p1.x.toFixed(1)} ${p1.y.toFixed(1)} L ${b.x.toFixed(1)} ${b.y.toFixed(1)} L ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`);
+    routeCurrent.setAttribute('cx',b.x.toFixed(1));routeCurrent.setAttribute('cy',b.y.toFixed(1));
+    if(routeHint)routeHint.style.display='none';
+  };
+  const addRoutePoint=p=>{
+    const last=routePoints[routePoints.length-1];
+    if(last&&haversine(last,p)<1.2)return;
+    routePoints.push({lat:p.lat,lon:p.lon,t:p.t});
+    if(routePoints.length>120)routePoints.shift();
+    drawRoute();
   };
   
   const elapsed=()=>elapsedBefore+(running?(Date.now()-startedAt)/1000:0);
@@ -911,6 +982,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
    if(v>=MIN_KMH&&step>=minStep)distanceM+=step;
   }
   lastPos=now;
+  addRoutePoint(now);
   if(v<MIN_KMH){targetSpeed=0;speedNow=0;accelKmhPerSec=Math.min(0,accelKmhPerSec);}
 
   // MAX uses a validated GPS fix rather than the smoothed display value, avoiding systematic under-reading.
@@ -992,7 +1064,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
  };
  const hasRunData=()=>graphSamples.length>1||distanceM>0||maxSpeed>0||elapsed()>0;
  const clearCurrentRun=(statusText)=>{
-  elapsedBefore=0;startedAt=0;distanceM=0;maxSpeed=0;speedNow=0;targetSpeed=0;displaySpeed=0;lastPos=null;lastFixAt=0;prevV=0;lastRawSpeed=0;lastRawAt=0;accelKmhPerSec=0;graphSamples=[];
+  elapsedBefore=0;startedAt=0;distanceM=0;maxSpeed=0;speedNow=0;targetSpeed=0;displaySpeed=0;lastPos=null;lastFixAt=0;prevV=0;lastRawSpeed=0;lastRawAt=0;accelKmhPerSec=0;graphSamples=[];clearRoute();
   $('start').textContent='▶  เริ่มวัดความเร็ว';setStatus(statusText||'พร้อมเริ่มวัดความเร็ว');render();
  };
  const finishReset=(shouldSave)=>{
@@ -1273,4 +1345,4 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
-<!-- v1.0.45: browser-managed rendering; opening animation only, immediate close -->
+<!-- v1.0.47: custom live GPS route HUD and shortened lower dial arc -->
