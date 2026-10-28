@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050b15">
-<meta name="app-version" content="1.0.52">
+<meta name="app-version" content="1.0.56">
 <meta name="application-name" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-title" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -610,8 +610,8 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
 .speedbox{position:relative;}
 .speedbox .dial-wrap{top:43%;}
 .speedbox .route-hud{
-  position:absolute;z-index:2;left:50%;top:calc(50% + clamp(68px,22vw,104px));
-  transform:translateX(-50%);width:min(53%,210px);height:clamp(74px,21vw,92px);
+  position:absolute;z-index:2;left:50%;top:calc(50% + clamp(78px,24vw,114px));
+  transform:translateX(-50%);width:min(58%,230px);height:clamp(74px,21vw,92px);
   border:1px solid rgba(70,163,226,.38);border-radius:13px;overflow:hidden;
   background:linear-gradient(145deg,rgba(5,18,32,.91),rgba(2,9,18,.88));
   box-shadow:inset 0 0 16px rgba(10,100,180,.10),0 0 15px rgba(0,128,255,.07);
@@ -683,7 +683,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
 @media(max-height:650px){.speedbox .speed{transform:translateX(5px)}.speedbox.speed-three-digit .speed{font-size:62px!important}}
 
 
-/* SRP GPS SPEED v1.0.52 — ultra-slim premium frame edges. */
+/* SRP GPS SPEED v1.0.56 — ultra-slim premium frame edges. */
 .panel,.stat,.graph-card,.modal,.picker-panel,.srp-dialog,.menu-item,
 .graph-picker-btn,.picker-option,.saved-run,.close-btn,.picker-close,.menu-btn,
 #start,#reset,.graph-tools #compareBtn,.graph-tools #clearCompareBtn,
@@ -705,6 +705,15 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
   shape-rendering:geometricPrecision;
 }
 
+/* SRP GPS SPEED v1.0.56 — 20% narrower, 15% taller; top edge position stays fixed. */
+.speedbox{padding-bottom:0!important}
+.speedbox .route-hud{
+  width:min(62.4%,300px)!important;
+  height:clamp(103.5px,25.3vw,112.7px)!important;
+  top:calc(50% + clamp(78px,24vw,114px))!important;
+}
+@media(max-height:760px){.speedbox .route-hud{top:calc(50% + 58px)!important;height:clamp(87.4px,21.85vw,94.3px)!important;width:min(59.2%,270px)!important}}
+@media(max-height:650px){.speedbox .route-hud{top:calc(50% + 42px)!important;height:73.6px!important;width:min(56%,240px)!important}}
 </style>
 </head>
 <body>
@@ -1449,7 +1458,7 @@ if('serviceWorker' in navigator){
 </html>
 <!-- v1.0.48: ignition sweep animation and unified route HUD glow -->
 
-/* v1.0.52: halve non-track rim thickness and soften halo; LIVE TRACK styling remains untouched. */
+/* v1.0.56: halve non-track rim thickness and soften halo; LIVE TRACK styling remains untouched. */
 .panel:after,.stat:after,.modal:after,.picker-panel:after,.srp-dialog:after,
 .graph-card:after,.menu-item:after,.graph-picker-btn:after,.picker-option:after,
 .saved-run:after,.close-btn:after,.picker-close:after,#start:after,#reset:after,
