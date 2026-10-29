@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050b15">
-<meta name="app-version" content="1.0.56">
+<meta name="app-version" content="1.0.57">
 <meta name="application-name" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-title" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -683,7 +683,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
 @media(max-height:650px){.speedbox .speed{transform:translateX(5px)}.speedbox.speed-three-digit .speed{font-size:62px!important}}
 
 
-/* SRP GPS SPEED v1.0.56 — ultra-slim premium frame edges. */
+/* SRP GPS SPEED v1.0.57 — speed-responsive dial color. */
 .panel,.stat,.graph-card,.modal,.picker-panel,.srp-dialog,.menu-item,
 .graph-picker-btn,.picker-option,.saved-run,.close-btn,.picker-close,.menu-btn,
 #start,#reset,.graph-tools #compareBtn,.graph-tools #clearCompareBtn,
@@ -705,7 +705,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
   shape-rendering:geometricPrecision;
 }
 
-/* SRP GPS SPEED v1.0.56 — 20% narrower, 15% taller; top edge position stays fixed. */
+/* SRP GPS SPEED v1.0.57 — speed-responsive dial color. */
 .speedbox{padding-bottom:0!important}
 .speedbox .route-hud{
   width:min(62.4%,300px)!important;
@@ -953,10 +953,23 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
     }
   }
   const DIAL_ARC=Math.PI*86*250/180;
+  const sweepStops=[...document.querySelectorAll('#sweepGradient stop')];
+  // Cool blue/cyan at low speed, gradually through green and yellow to hot orange/red.
+  const updateDialColor=kmh=>{
+    const t=Math.max(0,Math.min(1,Number(kmh||0)/DIAL_MAX));
+    const hue=210*(1-t); // 210° blue -> 0° red
+    const colors=[
+      `hsl(${Math.min(360,hue+12)}, 96%, 60%)`,
+      `hsl(${hue}, 96%, 55%)`,
+      `hsl(${Math.max(0,hue-8)}, 98%, 58%)`
+    ];
+    sweepStops.forEach((stop,i)=>stop.setAttribute('stop-color',colors[i]||colors[1]));
+  };
   const updateDial=kmh=>{
     if(!dialPath)return;
     const fraction=Math.max(0,Math.min(1,kmh/DIAL_MAX));
     dialPath.style.strokeDasharray=`${(DIAL_ARC*fraction).toFixed(2)} 600`;
+    updateDialColor(kmh);
   };
   const updateSpeedDigitLayout=kmh=>{
     const box=document.querySelector('.speedbox');
@@ -1458,7 +1471,7 @@ if('serviceWorker' in navigator){
 </html>
 <!-- v1.0.48: ignition sweep animation and unified route HUD glow -->
 
-/* v1.0.56: halve non-track rim thickness and soften halo; LIVE TRACK styling remains untouched. */
+/* v1.0.57: dial sweep shifts gradually from cool to warm tones with speed; other UI preserved. */
 .panel:after,.stat:after,.modal:after,.picker-panel:after,.srp-dialog:after,
 .graph-card:after,.menu-item:after,.graph-picker-btn:after,.picker-option:after,
 .saved-run:after,.close-btn:after,.picker-close:after,#start:after,#reset:after,
