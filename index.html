@@ -781,7 +781,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
     <div class="actions"><button id="start">▶ &nbsp; เริ่มวัดความเร็ว</button><button id="reset">↻ &nbsp; รีเซ็ต</button></div>
     <p class="note">อนุญาตตำแหน่ง GPS · ต้องเปิดหน้าแอพค้างไว้ขณะวัด (หน้าจอจะไม่ดับเอง)</p>
   </section>
-  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.63</div>
+  <div class="footer">SRP • GPS SPEED • RIDE WITH DATA • v1.0.64</div>
 </main>
 
 <div id="menuOverlay" class="overlay" role="dialog" aria-modal="true" aria-label="เมนูแอป">
@@ -908,7 +908,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
   el.classList.remove('open','closing');
  }
  function appDialog(message,{title='แจ้งเตือน',confirm=false,danger=false}={}){return new Promise(resolve=>{const ov=$('srpDialogOverlay'),actions=$('srpDialogActions');$('srpDialogTitle').textContent=title;$('srpDialogMessage').textContent=message;actions.innerHTML='';const finish=value=>{closeOverlay(ov);resolve(value);};if(confirm){const cancel=document.createElement('button');cancel.textContent='ยกเลิก';cancel.addEventListener('click',()=>finish(false));actions.appendChild(cancel);}const ok=document.createElement('button');ok.textContent=confirm?(danger?'ลบไฟล์':'ตกลง'):'ตกลง';ok.className='dialog-primary'+(danger?' dialog-danger':'');ok.addEventListener('click',()=>finish(true));actions.appendChild(ok);ov.classList.add('open');ok.focus();});}
- function persistRuns(){try{localStorage.setItem(RUNS_KEY,JSON.stringify(savedRuns));}catch(e){appDialog('พื้นที่จัดเก็บข้อมูลเต็ม ไม่สามารถบันทึกกราฟได้');}}
+ function persistRuns(runs=savedRuns){try{localStorage.setItem(RUNS_KEY,JSON.stringify(runs));return true;}catch(e){appDialog('พื้นที่จัดเก็บข้อมูลเต็ม ไม่สามารถบันทึกกราฟได้');return false;}}
  function stamp(d){return d.toLocaleString('th-TH',{year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});}
  function newRunName(d){
    const day=p2(d.getDate()), month=p2(d.getMonth()+1), year=d.getFullYear()+543;
@@ -921,7 +921,11 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
    const samples=graphSamples.slice();
    if(samples.length===1)samples.push({...samples[0]});
    const run={id:(Date.now().toString(36)+Math.random().toString(36).slice(2,7)),name:(String(customName||'').trim().slice(0,80)||newRunName(now)),savedAt:now.toISOString(),dateLabel:stamp(now),distanceKm:+(distanceM/1000).toFixed(4),maxSpeed:+maxSpeed.toFixed(1),avgSpeed:+(elapsed()>0?(distanceM/1000)/(elapsed()/3600):0).toFixed(1),elapsedSec:Math.floor(elapsed()),samples};
-   savedRuns.unshift(run);savedRuns=savedRuns.slice(0,100);persistRuns();return run;
+   const nextRuns=[run,...savedRuns].slice(0,100);
+   // Commit the in-memory list only after localStorage confirms the save succeeded.
+   if(!persistRuns(nextRuns))return false;
+   savedRuns=nextRuns;
+   return run;
  }
  // ---- tuning ----
  const MAX_ACC=40;      // reject very poor GPS fixes
@@ -1089,11 +1093,11 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
   if(acc>MAX_ACC){setStatus('สัญญาณ GPS ยังไม่นิ่ง · ±'+Math.round(acc)+' m');return;}
 
   // Cold-start GPS fixes can briefly report stale/erratic speed and positions after the app
-  // has been relaunched. Use the first two accurate fixes only to establish a clean baseline;
+  // has been relaunched. Keep the same four-fix baseline, with a slightly more practical accuracy gate;
   // do not let them affect the speed, distance, max speed, graph, or LIVE TRACK.
   if(gpsWarmupFixes<4){
-   // Require tighter accuracy during cold start; poor fixes do not count toward warm-up.
-   if(acc>25){setStatus('กำลังรอสัญญาณ GPS ที่แม่นยำ · ±'+Math.round(acc)+' m');return;}
+   // Keep the warm-up accuracy check, relaxed from 25 m to 30 m to avoid unnecessary waiting.
+   if(acc>30){setStatus('กำลังรอสัญญาณ GPS ที่แม่นยำ · ±'+Math.round(acc)+' m');return;}
    gpsWarmupFixes++;
    // Rebase on every warm-up fix so the first measured step cannot span a startup jump.
    lastPos=now;lastRawSpeed=0;lastRawAt=0;accelKmhPerSec=0;targetSpeed=0;speedNow=0;displaySpeed=0;
@@ -1216,6 +1220,8 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
  };
  const finishReset=(shouldSave)=>{
   const saved=shouldSave?saveCurrentRun($('customRunName').value):null;
+  // A failed save must never clear the current run or report success.
+  if(saved===false){closeOverlay($('resetChoiceOverlay'));return;}
   clearCurrentRun(shouldSave?(saved?'บันทึกกราฟแล้ว · พร้อมเริ่มวัดความเร็ว':'ไม่มีข้อมูลให้บันทึก · พร้อมเริ่มวัดความเร็ว'):'ลบผลรอบนี้แล้ว · พร้อมเริ่มวัดความเร็ว');
   if(saved){currentGraphId=saved.id;compareGraphId=null;refreshGraphUI();}
   closeOverlay($('resetChoiceOverlay'));
@@ -1494,7 +1500,7 @@ if('serviceWorker' in navigator){
 </html>
 <!-- v1.0.48: ignition sweep animation and unified route HUD glow -->
 
-/* v1.0.63: cold-start stabilization and strict LIVE TRACK movement validation; UI preserved. */
+/* v1.0.64: cold-start stabilization and strict LIVE TRACK movement validation; UI preserved. */
 .panel:after,.stat:after,.modal:after,.picker-panel:after,.srp-dialog:after,
 .graph-card:after,.menu-item:after,.graph-picker-btn:after,.picker-option:after,
 .saved-run:after,.close-btn:after,.picker-close:after,#start:after,#reset:after,

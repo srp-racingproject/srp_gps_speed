@@ -1,5 +1,5 @@
 /* SRP GPS SPEED PWA cache/update controller — v1.0.12 */
-const APP_VERSION = '1.0.63';
+const APP_VERSION = '1.0.64';
 const CACHE_PREFIX = 'srp-gps-speed-';
 const CACHE_NAME = `${CACHE_PREFIX}${APP_VERSION}`;
 const APP_SHELL = ['./', './index.html', './manifest.json'];
