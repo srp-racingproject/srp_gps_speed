@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#050b15">
-<meta name="app-version" content="1.0.57">
+<meta name="app-version" content="1.0.61">
 <meta name="application-name" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-title" content="SRP GPS SPEED">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -104,16 +104,16 @@ button:active{transform:scale(.985)}
 }
 
 
-/* SRP startup splash — Velocity Lab dark premium / flowing checkered flag */
+/* SRP startup splash — stable mobile rendering for flowing checkered flag */
 #srpSplash{isolation:isolate;overflow:hidden;position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:24px;text-align:center;background:radial-gradient(ellipse at 76% 23%,rgba(13,70,119,.38),transparent 43%),radial-gradient(ellipse at 24% 78%,rgba(7,43,78,.25),transparent 42%),linear-gradient(145deg,#03070d 0%,#07111e 48%,#02060c 100%);opacity:1;visibility:visible;transition:opacity .25s ease,visibility .25s ease}
-#srpSplash:before{content:"";position:absolute;z-index:-1;inset:-18%;pointer-events:none;opacity:.17;background-image:linear-gradient(45deg,rgba(74,111,148,.72) 25%,transparent 25%,transparent 75%,rgba(74,111,148,.72) 75%),linear-gradient(45deg,rgba(74,111,148,.72) 25%,transparent 25%,transparent 75%,rgba(74,111,148,.72) 75%);background-position:0 0,52px 52px;background-size:104px 104px;transform:perspective(700px) rotate(-13deg) skewY(-7deg) scale(1.16);transform-origin:center;mask-image:radial-gradient(ellipse at 50% 50%,#000 0%,rgba(0,0,0,.86) 34%,transparent 78%);animation:srpFlagDrift 9s ease-in-out infinite alternate}
-#srpSplash:after{content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;background:linear-gradient(112deg,transparent 15%,rgba(25,119,190,.055) 38%,rgba(76,174,230,.10) 48%,rgba(8,53,94,.04) 58%,transparent 76%),radial-gradient(ellipse at 50% 50%,transparent 20%,rgba(0,0,0,.40) 100%);mix-blend-mode:screen}
+#srpSplash:before{content:"";position:absolute;z-index:0;inset:-18%;pointer-events:none;opacity:.22;background-image:linear-gradient(45deg,rgba(74,111,148,.72) 25%,transparent 25%,transparent 75%,rgba(74,111,148,.72) 75%),linear-gradient(45deg,rgba(74,111,148,.72) 25%,transparent 25%,transparent 75%,rgba(74,111,148,.72) 75%);background-position:0 0,52px 52px;background-size:104px 104px;transform:perspective(700px) rotate(-13deg) skewY(-7deg) scale(1.16);transform-origin:center;mask-image:radial-gradient(ellipse at 50% 50%,#000 0%,rgba(0,0,0,.90) 34%,transparent 86%);animation:srpFlagDrift 9s ease-in-out infinite alternate}
+#srpSplash:after{content:"";position:absolute;z-index:0;inset:0;pointer-events:none;background:linear-gradient(112deg,transparent 15%,rgba(25,119,190,.055) 38%,rgba(76,174,230,.10) 48%,rgba(8,53,94,.04) 58%,transparent 76%),radial-gradient(ellipse at 50% 50%,transparent 20%,rgba(0,0,0,.40) 100%);mix-blend-mode:screen}
 @keyframes srpFlagDrift{0%{transform:perspective(700px) rotate(-13deg) skewY(-7deg) translate3d(-1.5%,0,0) scale(1.16)}100%{transform:perspective(700px) rotate(-9deg) skewY(-3deg) translate3d(1.5%,-1%,0) scale(1.2)}}
 #srpSplash.hide{opacity:0;visibility:hidden;pointer-events:none}
-#srpSplash .splash-brand{position:relative;font-size:clamp(30px,9vw,46px);font-weight:1000;font-style:italic;letter-spacing:-1px;color:#f4f7ff;text-shadow:0 2px 2px #000,0 0 24px rgba(22,140,255,.24)}
+#srpSplash .splash-brand{position:relative;z-index:1;font-size:clamp(30px,9vw,46px);font-weight:1000;font-style:italic;letter-spacing:-1px;color:#f4f7ff;text-shadow:0 2px 2px #000,0 0 24px rgba(22,140,255,.24)}
 #srpSplash .splash-brand span{background:linear-gradient(100deg,#7895b4 0%,#e7f4ff 28%,#50c8ff 56%,#a7c9e9 78%,#6386a9 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;text-shadow:none;filter:drop-shadow(0 2px 5px rgba(0,0,0,.65)) drop-shadow(0 0 12px rgba(35,145,220,.18))}
-#srpSplash .splash-line{position:relative;width:100px;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,#168cff 18%,#4dd9ff 56%,rgba(22,139,255,.15) 88%,transparent);box-shadow:0 0 15px rgba(22,140,255,.25)}
-#srpSplash .splash-credit{position:relative;color:#b7cbe0;font-size:clamp(12px,3.5vw,15px);font-weight:800;letter-spacing:1.4px;text-shadow:0 2px 8px #000}
+#srpSplash .splash-line{position:relative;z-index:1;width:100px;height:3px;border-radius:3px;background:linear-gradient(90deg,transparent,#168cff 18%,#4dd9ff 56%,rgba(22,139,255,.15) 88%,transparent);box-shadow:0 0 15px rgba(22,140,255,.25)}
+#srpSplash .splash-credit{position:relative;z-index:1;color:#b7cbe0;font-size:clamp(12px,3.5vw,15px);font-weight:800;letter-spacing:1.4px;text-shadow:0 2px 8px #000}
 @media(prefers-reduced-motion:reduce){#srpSplash{transition:none}#srpSplash:before{animation:none}}
 
 
@@ -683,7 +683,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
 @media(max-height:650px){.speedbox .speed{transform:translateX(5px)}.speedbox.speed-three-digit .speed{font-size:62px!important}}
 
 
-/* SRP GPS SPEED v1.0.57 — speed-responsive dial color. */
+/* SRP GPS SPEED v1.0.61 — slightly deeper soft cool-to-warm dial color. */
 .panel,.stat,.graph-card,.modal,.picker-panel,.srp-dialog,.menu-item,
 .graph-picker-btn,.picker-option,.saved-run,.close-btn,.picker-close,.menu-btn,
 #start,#reset,.graph-tools #compareBtn,.graph-tools #clearCompareBtn,
@@ -705,7 +705,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
   shape-rendering:geometricPrecision;
 }
 
-/* SRP GPS SPEED v1.0.57 — speed-responsive dial color. */
+/* SRP GPS SPEED v1.0.61 — slightly deeper soft cool-to-warm dial color. */
 .speedbox{padding-bottom:0!important}
 .speedbox .route-hud{
   width:min(62.4%,300px)!important;
@@ -954,14 +954,14 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
   }
   const DIAL_ARC=Math.PI*86*250/180;
   const sweepStops=[...document.querySelectorAll('#sweepGradient stop')];
-  // Cool blue/cyan at low speed, gradually through green and yellow to hot orange/red.
+  // Balanced soft cool-to-warm palette: richer than pastel, less vivid than the original.
   const updateDialColor=kmh=>{
     const t=Math.max(0,Math.min(1,Number(kmh||0)/DIAL_MAX));
-    const hue=210*(1-t); // 210° blue -> 0° red
+    const hue=205*(1-t)+8*t; // cool blue -> warm coral
     const colors=[
-      `hsl(${Math.min(360,hue+12)}, 96%, 60%)`,
-      `hsl(${hue}, 96%, 55%)`,
-      `hsl(${Math.max(0,hue-8)}, 98%, 58%)`
+      `hsl(${Math.min(360,hue+9)}, 75%, 64%)`,
+      `hsl(${hue}, 79%, 61%)`,
+      `hsl(${Math.max(0,hue-7)}, 76%, 65%)`
     ];
     sweepStops.forEach((stop,i)=>stop.setAttribute('stop-color',colors[i]||colors[1]));
   };
@@ -1471,7 +1471,7 @@ if('serviceWorker' in navigator){
 </html>
 <!-- v1.0.48: ignition sweep animation and unified route HUD glow -->
 
-/* v1.0.57: dial sweep shifts gradually from cool to warm tones with speed; other UI preserved. */
+/* v1.0.61: dial sweep uses a slightly deeper, still-soft cool-to-warm palette; other UI preserved. */
 .panel:after,.stat:after,.modal:after,.picker-panel:after,.srp-dialog:after,
 .graph-card:after,.menu-item:after,.graph-picker-btn:after,.picker-option:after,
 .saved-run:after,.close-btn:after,.picker-close:after,#start:after,#reset:after,
