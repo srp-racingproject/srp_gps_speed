@@ -927,7 +927,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
  const MAX_ACC=40;      // reject very poor GPS fixes
  const MIN_KMH=1.5;     // low speed is treated as stationary to suppress drift
  const STALE_MS=4500;   // after this, predicted speed eases down to zero
- let watching=null,running=false,startedAt=0,elapsedBefore=0,lastPos=null,distanceM=0,maxSpeed=0,speedNow=0,lastFixAt=0,tick=null,wake=null,prevV=0;
+ let watching=null,running=false,startedAt=0,elapsedBefore=0,lastPos=null,distanceM=0,maxSpeed=0,speedNow=0,lastFixAt=0,tick=null,wake=null,prevV=0,gpsWarmupFixes=0;
  // UI-only speed prediction: calculations, distance, MAX and graph use confirmed GPS fixes only.
  let targetSpeed=0,displaySpeed=0,lastRawSpeed=0,lastRawAt=0,accelKmhPerSec=0,lastRenderAt=0,renderFrame=null;
  const p2=n=>String(n).padStart(2,'0');
@@ -1077,6 +1077,14 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
   lastFixAt=Date.now();
   if(acc>MAX_ACC){setStatus('สัญญาณ GPS ยังไม่นิ่ง · ±'+Math.round(acc)+' m');return;}
 
+  // Cold-start GPS fixes can briefly report stale/erratic speed and positions after the app
+  // has been relaunched. Use the first two accurate fixes only to establish a clean baseline;
+  // do not let them affect the speed, distance, max speed, graph, or LIVE TRACK.
+  if(gpsWarmupFixes<2){
+   gpsWarmupFixes++;lastPos=now;lastRawSpeed=0;lastRawAt=0;accelKmhPerSec=0;targetSpeed=0;speedNow=0;displaySpeed=0;
+   setStatus('กำลังกรองสัญญาณ GPS… '+gpsWarmupFixes+'/2',true);render();return;
+  }
+
   let step=0,dt=0;
   if(lastPos){step=haversine(lastPos,now);dt=(now.t-lastPos.t)/1000;}
   let v=null;
@@ -1128,7 +1136,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
   setStatus(msg+' · ตรวจสอบ Location');
  }
  function startWatch(){
-  stopWatch();lastPos=null;prevV=0;
+  stopWatch();lastPos=null;prevV=0;gpsWarmupFixes=0;lastRawSpeed=0;lastRawAt=0;accelKmhPerSec=0;targetSpeed=0;speedNow=0;displaySpeed=0;
   watching=navigator.geolocation.watchPosition(onFix,onErr,{enableHighAccuracy:true,maximumAge:0,timeout:20000});
  }
  function stopWatch(){if(watching!==null&&navigator.geolocation){navigator.geolocation.clearWatch(watching);watching=null;}}
@@ -1188,7 +1196,7 @@ button:not(:disabled):active{transform:scale(.985);filter:brightness(1.045)}
  };
  const hasRunData=()=>graphSamples.length>1||distanceM>0||maxSpeed>0||elapsed()>0;
  const clearCurrentRun=(statusText)=>{
-  elapsedBefore=0;startedAt=0;distanceM=0;maxSpeed=0;speedNow=0;targetSpeed=0;displaySpeed=0;lastPos=null;lastFixAt=0;prevV=0;lastRawSpeed=0;lastRawAt=0;accelKmhPerSec=0;graphSamples=[];clearRoute();
+  gpsWarmupFixes=0;elapsedBefore=0;startedAt=0;distanceM=0;maxSpeed=0;speedNow=0;targetSpeed=0;displaySpeed=0;lastPos=null;lastFixAt=0;prevV=0;lastRawSpeed=0;lastRawAt=0;accelKmhPerSec=0;graphSamples=[];clearRoute();
   $('start').textContent='▶  เริ่มวัดความเร็ว';setStatus(statusText||'พร้อมเริ่มวัดความเร็ว');render();
  };
  const finishReset=(shouldSave)=>{
